@@ -13,7 +13,13 @@ module Exe_stage(
     input clk,
     input rst,
 
-    input [31:0] E_pc,
+    // branch prediction signals 
+    input               E_pred_taken,
+    input        [7:0]  E_pht_idx,   
+    input               E_btb_hit,   
+    input        [31:0] E_btb_target,
+    
+    input [31:0] E_PC,
     input [31:0] E_imm,
     input [4:0] E_rs1,
     input [4:0] E_rs2,
@@ -57,7 +63,14 @@ module Exe_stage(
     output logic [31:0] E_alu_out_f,
     output logic [31:0] E_DM_data,
     output logic [31:0] E_csr_out,
-    output logic [31:0] jb_pc
+    output logic [31:0] jb_pc,
+    //output for branch predictor update
+    output logic redirect_valid,
+    output logic [31:0] redirect_pc,
+    output logic ex_update_en,
+    output logic ex_actual_taken,
+    output logic [31:0] ex_pc,
+    output logic [31:0] ex_actual_target
 );
 
     // Forwarding logic
@@ -70,10 +83,32 @@ module Exe_stage(
     logic [31:0] alu_in2;
     logic pc_flag;
     logic [31:0] JB_src;
-
+    logic is_branch;
+    logic mis_dir;
+    logic mis_tgt;
+    logic mispredict;
+    //branch prediction 
 
     always_comb begin
-        flush       = pc_flag || E_JAL || E_JALR;
+        ex_actual_target = jb_pc;
+        is_branch = (E_op == 7'b1100011);         // RISC-V B-type
+        ex_actual_taken = (E_JAL | E_JALR) ? 1'b1
+                        : (is_branch ? pc_flag : 1'b0);
+        ex_update_en = (is_branch | E_JAL | E_JALR);
+        mis_dir = (ex_actual_taken != E_pred_taken);
+        mis_tgt = (ex_actual_taken & E_pred_taken) &
+                ( (!E_btb_hit) | (E_btb_target != ex_actual_target) );
+        mispredict = (mis_dir | mis_tgt);
+    end
+    always_comb begin
+        redirect_valid = mispredict;
+        redirect_pc    = ex_actual_taken ? ex_actual_target
+                                            : (E_PC + 32'd4);
+    end
+
+    always_comb begin
+        //flush       = pc_flag || E_JAL || E_JALR;
+        flush       =  mispredict;
 
         stall       = ((E_op == 7'b0000011) && 
                     ((E_rd   == D_rs1)   || (E_rd   == D_rs2)))
@@ -134,7 +169,7 @@ module Exe_stage(
 
     mux2to1 mux2to1_ALUsrc1(
         .in0(forwarded_rs1_data),
-        .in1(E_pc),
+        .in1(E_PC),
         .sel(E_alu_op1_sel),
         .out(alu_in1)
     );
@@ -167,11 +202,16 @@ module Exe_stage(
     CSR_reg csr_unit (
         .clk(clk),
         .rst(rst),
-        .pc(E_pc),
+        .pc(E_PC),
         .immex(E_imm),
         .csr_out(E_csr_out)
     );
-
+    mux2to1 mux2to1_jbsrc(
+        .in0(forwarded_rs1_data),
+        .in1(E_PC),
+        .sel(E_jb_op1_sel),
+        .out(JB_src)
+    );
     JB_unit JB_unit(
         .in_1(JB_src),
         .in_2(E_imm),

@@ -11,6 +11,7 @@
 `include "../src/EM_reg.sv"
 `include "../src/MW_reg.sv"
 `include "../src/WB_stage.sv"
+`include "../src/Shifter.sv"
 
 module CPU (
     input  logic        clk,
@@ -19,7 +20,7 @@ module CPU (
     // ------------------------------
     // Instruction Memory (read-only)
     // ------------------------------
-    input  logic [31:0] im_data_in,  
+    input  logic [31:0] im_instr,  
     output logic [13:0] im_addr,     
 
     // ------------------------------
@@ -36,7 +37,7 @@ module CPU (
     logic flush;
 
     // IF Stage signals
-    logic pc_sel;
+    logic next_pc_sel;
     logic [31:0] jb_pc;
     logic [31:0] next_pc;
     logic [31:0] F_PC;
@@ -44,7 +45,7 @@ module CPU (
     // ID Stage signals
     logic [31:0] D_PC;
     logic [31:0] D_instruction;
-    logic [6:0]  D_opcode;
+    logic [6:0]  D_op;
     logic [2:0]  D_funct3;
     logic [4:0]  D_rd;
     logic [4:0]  D_rs1;
@@ -68,8 +69,9 @@ module CPU (
     logic [31:0] D_dm_write_enable;
     logic        D_web;
     logic D_jb_op1_sel;
-    // EX Stage signals
-    logic        next_pc_sel;     
+    // EX Stage signals   
+    logic [4:0]  E_alu_ctrl;
+    logic [31:0] E_PC;
     logic [31:0] E_imm;  
     logic [6:0]  E_op;
     logic [31:0] E_alu_out, E_alu_out_f, E_DM_data, E_csr_out;
@@ -99,79 +101,60 @@ module CPU (
     logic        W_wb_data_select;
     logic [31:0] LD_data;
 
-    //  Word-addressed SRAM
-    always_comb begin
-        im_addr = next_pc   [15:2];   
-        dm_addr = M_ALU_out [15:2];   
-    end
+    // branch prediction signals
+    logic               F_pred_taken;
+    logic [7:0]         F_pht_idx;
+    logic               F_btb_hit;
+    logic [31:0]        F_btb_target;
+    logic               D_pred_taken;
+    logic [7:0]         D_pht_idx;
+    logic               D_btb_hit;
+    logic [31:0]        D_btb_target;
+    logic               E_pred_taken;
+    logic [7:0]         E_pht_idx;
+    logic               E_btb_hit;
+    logic [31:0]        E_btb_target;
+    logic               ex_update_en;
+    logic               ex_actual_taken;
+    logic [31:0]        ex_pc;
+    logic [31:0]        ex_actual_target;
+    logic               redirect_valid;
+    logic [31:0]        redirect_pc;
 
-
-    // Store data aligner + byte write mask (active-low BWEB)
-    always_comb begin
-        if (M_op == 7'b0100011) begin  // S-type (store)
-            unique case (M_funct3)
-            // -------- SW (store word, 32-bit) --------
-            3'b010: begin
-                dm_data_in = M_DM_data;
-                dm_bweb    = M_dm_write_enable;
-            end
-
-            // -------- SB (store byte, 8-bit) --------
-            3'b000: begin
-                unique case (M_ALU_out[1:0])
-                2'b11: begin
-                    dm_data_in = { M_DM_data[7:0], 24'd0 };
-                    dm_bweb    = { M_dm_write_enable[7:0], 24'hFF_FFFF };
-                end
-                2'b10: begin
-                    dm_data_in = { M_DM_data[15:0], 16'd0 };
-                    dm_bweb    = { M_dm_write_enable[15:0], 16'hFFFF };
-                end
-                2'b01: begin
-                    dm_data_in = { M_DM_data[23:0], 8'd0 };
-                    dm_bweb    = { M_dm_write_enable[23:0], 8'hFF };
-                end
-                default: begin
-                    dm_data_in = M_DM_data;
-                    dm_bweb    = M_dm_write_enable;
-                end
-                endcase
-            end
-
-            // -------- SH (store halfword, 16-bit) --------
-            3'b001: begin
-                unique case (M_ALU_out[1:0])
-                2'b10: begin
-                    dm_data_in = { M_DM_data[15:0], 16'd0 };
-                    dm_bweb    = { M_dm_write_enable[15:0], 16'hFFFF };
-                end
-                default: begin
-                    dm_data_in = M_DM_data;
-                    dm_bweb    = M_dm_write_enable;
-                end
-                endcase
-            end
-
-            default: begin
-                dm_data_in = 32'd0;
-                dm_bweb    = 32'hFFFF_FFFF; 
-            end
-            endcase
-        end else begin
-            dm_data_in = M_DM_data;
-            dm_bweb    = M_dm_write_enable;
-        end
-    end
-
+    Shifter shifter (
+        .next_pc(next_pc),
+        .M_ALU_out(M_ALU_out),
+        .M_op(M_op),
+        .M_funct3(M_funct3),
+        .M_dm_data(M_dm_data),
+        .M_dm_write_enable(M_dm_write_enable),
+        .im_addr(im_addr),
+        .dm_addr(dm_addr),
+        .dm_data_in(dm_data_in),
+        .dm_bweb(dm_bweb)
+    );
     // Instantiate the pipeline stages
     IF_stage if_stage (
         .clk(clk),
         .rst(rst),
         .stall(stall),
-        .next_pc_sel(next_pc_sel),
-        .jb_pc(jb_pc),
+        //.next_pc_sel(next_pc_sel),
+        //.jb_pc(jb_pc),
         .next_pc(next_pc),
-        .F_PC(F_PC)
+        .F_PC(F_PC),
+        .d_rst(d_rst),
+        //from EX stage for branch prediction
+        .redirect_valid(redirect_valid),
+        .redirect_pc(redirect_pc),
+        .ex_update_en(ex_update_en),
+        .ex_actual_taken(ex_actual_taken),
+        .ex_pc(ex_pc),
+        .ex_actual_target(ex_actual_target),
+        .pht_idx_ex(E_pht_idx),
+        .F_pred_taken(F_pred_taken),
+        .F_pht_idx(F_pht_idx),
+        .F_btb_hit(F_btb_hit),
+        .F_btb_target(F_btb_target) 
     );
 
     FD_reg fd_reg (
@@ -180,9 +163,17 @@ module CPU (
         .stall(stall),
         .flush(flush),
         .F_PC(F_PC),
-        .F_instruction(im_data_in),
+        .F_instruction(im_instr),
+        .F_pred_taken(F_pred_taken),
+        .F_pht_idx(F_pht_idx),
+        .F_btb_hit(F_btb_hit),
+        .F_btb_target(F_btb_target),
         .D_PC(D_PC),
-        .D_instruction(D_instruction)
+        .D_instruction(D_instruction),
+        .D_pred_taken(D_pred_taken),
+        .D_pht_idx(D_pht_idx),
+        .D_btb_hit(D_btb_hit),
+        .D_btb_target(D_btb_target)
     );
 
     ID_stage id_stage (
@@ -200,7 +191,7 @@ module CPU (
         .W_rd_data           (W_rd_data),
 
         // Decoded fields / control to next stage
-        .D_opcode            (D_opcode),
+        .D_op                (D_op),
         .D_funct3            (D_funct3),
         .D_rd                (D_rd),
         .D_rs1               (D_rs1),
@@ -227,7 +218,7 @@ module CPU (
         .D_alu_op1_sel       (D_alu_op1_sel),
         .D_alu_op2_sel       (D_alu_op2_sel),
         .D_wb_data_sel       (D_wb_data_sel),
-        .D_jb_op1_sel       (D_jb_op1_sel),
+        .D_jb_op1_sel        (D_jb_op1_sel),
         // Data memory write enables (active-low byte mask & WEB)
         .D_dm_write_enable   (D_dm_write_enable),
         .D_web               (D_web)
@@ -240,7 +231,7 @@ module CPU (
         .flush                (flush),
 
         // Inputs from ID stage
-        .D_pc                 (D_pc),
+        .D_PC                 (D_PC),
         .D_op                 (D_op),
         .D_funct3             (D_funct3),
         .D_rd                 (D_rd),
@@ -265,9 +256,13 @@ module CPU (
         .D_wb_data_sel        (D_wb_data_sel),
         .D_dm_write_enable    (D_dm_write_enable),
         .D_web                (D_web),
-
+        //branch prediction signals
+        .D_pred_taken        (D_pred_taken),
+        .D_pht_idx           (D_pht_idx),
+        .D_btb_hit           (D_btb_hit),
+        .D_btb_target        (D_btb_target),
         // Outputs to EX stage
-        .E_pc                 (E_pc),
+        .E_PC                 (E_PC),
         .E_op                 (E_op),
         .E_funct3             (E_funct3),
         .E_rd                 (E_rd),
@@ -281,7 +276,7 @@ module CPU (
         .E_rs1_data_f         (E_rs1_data_f),
         .E_rs2_data_f         (E_rs2_data_f),
         .E_imm                (E_imm),
-        .E_alu_control        (E_alu_control),
+        .E_alu_ctrl           (E_alu_ctrl),
         .E_reg_write_enable   (E_reg_write_enable),
         .E_reg_write_enable_f (E_reg_write_enable_f),
         .E_JAL                (E_JAL),
@@ -291,7 +286,12 @@ module CPU (
         .E_alu_op2_sel        (E_alu_op2_sel),
         .E_wb_data_sel        (E_wb_data_sel),
         .E_dm_write_enable    (E_dm_write_enable),
-        .E_web                (E_web)
+        .E_web                (E_web),
+        //branch prediction signals
+        .E_pred_taken        (E_pred_taken),
+        .E_pht_idx           (E_pht_idx),   
+        .E_btb_hit           (E_btb_hit),   
+        .E_btb_target        (E_btb_target)
     );
 
 
@@ -301,7 +301,7 @@ module CPU (
     Exe_stage exe_stage (
         .clk                    (clk),
         .rst                    (rst),
-        .E_pc                   (E_pc),
+        .E_PC                   (E_PC),
         .E_imm                  (E_imm),
         .E_rs1                  (E_rs1),
         .E_rs2                  (E_rs2),
@@ -316,6 +316,17 @@ module CPU (
         .W_reg_write_enable     (W_reg_write_enable),
         .W_reg_write_enable_f   (W_reg_write_enable_f),
 
+        //branch prediction signals
+        .E_pred_taken           (E_pred_taken),
+        .E_pht_idx              (E_pht_idx),    
+        .E_btb_hit              (E_btb_hit),    
+        .E_btb_target           (E_btb_target),
+        .redirect_valid         (redirect_valid),
+        .redirect_pc            (redirect_pc),
+        .ex_update_en           (ex_update_en),
+        .ex_actual_taken        (ex_actual_taken),
+        .ex_pc                  (ex_pc),
+        .ex_actual_target       (ex_actual_target),
         // Forwarded data
         .E_rs1_data             (E_rs1_data),
         .E_rs2_data             (E_rs2_data),

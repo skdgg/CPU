@@ -15,7 +15,7 @@ module ID_stage(
     input [4:0] W_rd, // Write address from the WB stage
     input [31:0] W_rd_data,   // Write data from the WB stage
 
-    output logic [6:0] D_opcode, 
+    output logic [6:0] D_op, 
     output logic [2:0] D_funct3,   
     output logic [4:0] D_rd,       
     output logic [4:0] D_rs1,      
@@ -44,11 +44,14 @@ module ID_stage(
     // Instantiate the Decoder
     Decoder decoder (
         .instruction(D_instruction),
-        .opcode(D_opcode),
+        .opcode(D_op),
         .funct3(D_funct3),
         .rd(D_rd),
         .rs1(D_rs1),
         .rs2(D_rs2),
+        .rd_f(D_rd_f),
+        .rs1_f(D_rs1_f),
+        .rs2_f(D_rs2_f),
         .alu_control(D_alu_control),
         .reg_write_enable(D_reg_write_enable),
         .reg_write_enable_f(D_reg_write_enable_f),
@@ -66,26 +69,26 @@ module ID_stage(
     Reg_file reg_file (
         .clk(clk),
         .rst(rst),
-        .write_enable(wb_write_enable),
-        .write_address(wb_write_address),
-        .write_data(wb_write_data),
-        .read_address1(rs1),
-        .read_data1(rs1_data),
-        .read_address2(rs2),
-        .read_data2(rs2_data)
+        .write_enable(W_write_enable),
+        .write_address(W_rd),
+        .write_data(W_rd_data),
+        .read_address1(D_rs1),
+        .read_data1(D_rs1_data),
+        .read_address2(D_rs2),
+        .read_data2(D_rs2_data)
     );
 
     // Instantiate the Floating-Point Register File
     F_Reg_file f_reg_file (
         .clk(clk),
         .rst(rst),
-        .W_wb_en_f(wb_write_enable_f),
-        .rs1_index_f(rs1),
-        .rs2_index_f(rs2),
-        .W_rd_index_f(wb_write_address),
-        .W_rd_data_f(wb_write_data_f),
-        .rs1_data_f(rs1_data_f),
-        .rs2_data_f(rs2_data_f)
+        .W_wb_en_f(W_write_enable_f),
+        .rs1_index_f(D_rs1_f),
+        .rs2_index_f(D_rs2_f),
+        .W_rd_index_f(W_rd),
+        .W_rd_data_f(W_rd_data),
+        .rs1_data_f(D_rs1_data_f),
+        .rs2_data_f(D_rs2_data_f)
     );
 
     // Instantiate the Immediate Extender

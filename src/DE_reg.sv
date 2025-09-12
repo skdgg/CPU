@@ -8,7 +8,7 @@ module DE_reg(
     input flush,
 
     // Inputs from the ID stage
-    input [31:0] D_pc,
+    input [31:0] D_PC,
     input [6:0] D_op,
     input [2:0] D_funct3,
     input [4:0] D_rd,
@@ -33,9 +33,14 @@ module DE_reg(
     input D_wb_data_sel,
     input [31:0] D_dm_write_enable,
     input D_web,
+    //branch prediction signals
+    input               D_pred_taken,
+    input        [7:0]  D_pht_idx,
+    input               D_btb_hit,
+    input        [31:0] D_btb_target,
 
     // Outputs to the EX stage
-    output logic [31:0] E_pc,
+    output logic [31:0] E_PC,
     output logic [6:0] E_op,
     output logic [2:0] E_funct3,
     output logic [4:0] E_rd,
@@ -49,7 +54,7 @@ module DE_reg(
     output logic [31:0] E_rs1_data_f,
     output logic [31:0] E_rs2_data_f,
     output logic [31:0] E_imm,
-    output logic [4:0] E_alu_control,
+    output logic [4:0] E_alu_ctrl,
     output logic E_reg_write_enable,
     output logic E_reg_write_enable_f,
     output logic E_JAL,
@@ -59,12 +64,17 @@ module DE_reg(
     output logic E_alu_op2_sel,
     output logic E_wb_data_sel,
     output logic [31:0] E_dm_write_enable,
-    output logic E_web
+    output logic E_web,
+    //branch prediction signals
+    output logic        E_pred_taken,
+    output logic [7:0]  E_pht_idx,   
+    output logic        E_btb_hit,   
+    output logic [31:0] E_btb_target
 );
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            E_pc <= 32'd0;
+            E_PC <= 32'd0;
             E_op <= 7'd0;
             E_funct3 <= 3'd0;
             E_rd <= 5'd0;
@@ -75,21 +85,27 @@ module DE_reg(
             E_rs1_data_f <= 32'd0;
             E_rs2_data_f <= 32'd0;
             E_imm <= 32'd0;
-            E_alu_control <= 5'd0;
+            E_alu_ctrl <= 5'd0;
             E_reg_write_enable <= 1'b0;
             E_reg_write_enable_f <= 1'b0;
             E_JAL <= 1'b0;
             E_JALR <= 1'b0;
+            E_jb_op1_sel <= 1'b0;  
             E_alu_op1_sel <= 1'b0;
             E_alu_op2_sel <= 1'b0;
             E_wb_data_sel <= 1'b0;
             E_dm_write_enable <= 32'd0;
             E_web <= 1'b0;
+            E_rd_f <= 5'd0;
             E_rs1_f <= 5'd0;
             E_rs2_f <= 5'd0;
+            E_pred_taken <= 1'b0;
+            E_pht_idx <= 8'd0;
+            E_btb_hit <= 1'b0;
+            E_btb_target <= 32'd0;
         end else if (flush || stall) begin
             // On flush, or stall, insert a bubble (no-op)
-            E_pc <= 32'd0;
+            E_PC <= 32'd0;
             E_op <= 7'd0;
             E_funct3 <= 3'd0;
             E_rd <= 5'd0;
@@ -100,21 +116,27 @@ module DE_reg(
             E_rs1_data_f <= 32'd0;
             E_rs2_data_f <= 32'd0;
             E_imm <= 32'd0;
-            E_alu_control <= 5'd0;
+            E_alu_ctrl <= 5'd0;
             E_reg_write_enable <= 1'b0;
             E_reg_write_enable_f <= 1'b0;
             E_JAL <= 1'b0;
             E_JALR <= 1'b0;
+            E_jb_op1_sel <= 1'b0;
             E_alu_op1_sel <= 1'b0;
             E_alu_op2_sel <= 1'b0;
             E_wb_data_sel <= 1'b0;
             E_dm_write_enable <= 32'hFFFF_FFFF;
             E_web <= 1'b1;
+            E_rd_f <= 5'd0;
             E_rs1_f <= 5'd0;
             E_rs2_f <= 5'd0;
+            E_pred_taken <= 1'b0;
+            E_pht_idx <= 8'd0;
+            E_btb_hit <= 1'b0;  
+            E_btb_target <= 32'd0;
         end else begin
             // Pass data from ID to EX
-            E_pc <= D_pc;
+            E_PC <= D_PC;
             E_op <= D_op;
             E_funct3 <= D_funct3;
             E_rd <= D_rd;
@@ -125,7 +147,7 @@ module DE_reg(
             E_rs1_data_f <= D_rs1_data_f;
             E_rs2_data_f <= D_rs2_data_f;
             E_imm <= D_imm;
-            E_alu_control <= D_alu_control;
+            E_alu_ctrl <= D_alu_control;
             E_reg_write_enable <= D_reg_write_enable;
             E_reg_write_enable_f <= D_reg_write_enable_f;
             E_JAL <= D_JAL;
@@ -139,6 +161,10 @@ module DE_reg(
             E_rd_f <= D_rd_f;
             E_rs1_f <= D_rs1_f;
             E_rs2_f <= D_rs2_f;
+            E_pred_taken <= D_pred_taken;
+            E_pht_idx <= D_pht_idx;
+            E_btb_hit <= D_btb_hit;
+            E_btb_target <= D_btb_target;
         end
     end
 

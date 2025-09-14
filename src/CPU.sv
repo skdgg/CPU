@@ -70,25 +70,35 @@ module CPU (
     logic        D_web;
     logic D_jb_op1_sel;
     // EX Stage signals   
+    logic [4:0]  E_rs1;
+    logic [4:0]  E_rs2;
+    logic [4:0]  E_rs1_f;
+    logic [4:0]  E_rs2_f;
+    logic [31:0] E_rs1_data;
+    logic [31:0] E_rs2_data;
+    logic [31:0] E_rs1_data_f;
+    logic [31:0] E_rs2_data_f;
+    logic [4:0]  E_rd;
     logic [4:0]  E_alu_ctrl;
     logic [31:0] E_PC;
     logic [31:0] E_imm;  
     logic [6:0]  E_op;
-    logic [31:0] E_alu_out, E_alu_out_f, E_DM_data, E_csr_out;
+    logic [31:0] E_alu_out, E_alu_out_f, E_dm_data, E_csr_out;
     logic E_alu_op1_sel;
     logic E_alu_op2_sel;
     logic E_wb_data_sel;
     logic [31:0] E_dm_write_enable;  
     logic E_web;
     // MW Register signals
+    logic [31:0] M_dm_data;
+    logic [31:0] M_alu_out;
     logic [6:0]  M_op;
     logic [4:0]  M_rd, M_rd_f;
     logic [2:0]  M_funct3;
     logic        M_reg_write_enable, M_reg_write_enable_f;
-    logic        M_wb_data_select;
+    logic        M_wb_data_sel;
     logic [31:0] M_dm_write_enable;
-    logic        M_web;
-    logic [31:0] M_ALU_out, M_DM_data;
+    logic [31:0] M_alu_out, M_DM_data;
     logic [31:0] M_rd_data; 
 
     // WB Stage signals
@@ -123,7 +133,7 @@ module CPU (
 
     Shifter shifter (
         .next_pc(next_pc),
-        .M_ALU_out(M_ALU_out),
+        .M_alu_out(M_alu_out),
         .M_op(M_op),
         .M_funct3(M_funct3),
         .M_dm_data(M_dm_data),
@@ -332,7 +342,7 @@ module CPU (
         .E_rs2_data             (E_rs2_data),
         .E_rs1_data_f           (E_rs1_data_f),
         .E_rs2_data_f           (E_rs2_data_f),
-        .M_rd_data              (M_rd_data),
+        .M_rd_data              (M_alu_out),
         .W_rd_data              (W_rd_data),
 
         .E_JAL                  (E_JAL),
@@ -355,7 +365,7 @@ module CPU (
         .next_pc_sel            (next_pc_sel),
         .E_alu_out              (E_alu_out),
         .E_alu_out_f            (E_alu_out_f),
-        .E_DM_data              (E_DM_data),
+        .E_dm_data              (E_dm_data),
         .E_csr_out              (E_csr_out),
         .jb_pc                  (jb_pc)
     );
@@ -372,7 +382,7 @@ module CPU (
         .E_funct3               (E_funct3),
         .E_reg_write_enable     (E_reg_write_enable),
         .E_reg_write_enable_f   (E_reg_write_enable_f),
-        .E_wb_data_select       (E_wb_data_select),
+        .E_wb_data_sel          (E_wb_data_sel),
         .E_dm_write_enable      (E_dm_write_enable),
         .E_web                  (E_web),
 
@@ -389,9 +399,9 @@ module CPU (
         .M_funct3               (M_funct3),
         .M_reg_write_enable     (M_reg_write_enable),
         .M_reg_write_enable_f   (M_reg_write_enable_f),
-        .M_wb_data_select       (M_wb_data_select),
+        .M_wb_data_sel          (M_wb_data_sel),
         .M_dm_write_enable      (M_dm_write_enable),
-        .M_web                  (M_web),
+        .M_web                  (dm_web),
 
         // Data to MEM
         .M_alu_out              (M_alu_out),
@@ -410,7 +420,7 @@ module CPU (
         .M_funct3              (M_funct3),
         .M_reg_write_enable    (M_reg_write_enable),
         .M_reg_write_enable_f  (M_reg_write_enable_f),
-        .M_wb_data_select      (M_wb_data_select),
+        .M_wb_data_sel         (M_wb_data_sel),
 
         // To WB stage
         .W_alu_out             (W_alu_out),
@@ -419,10 +429,10 @@ module CPU (
         .W_funct3              (W_funct3),
         .W_reg_write_enable    (W_reg_write_enable),
         .W_reg_write_enable_f  (W_reg_write_enable_f),
-        .W_wb_data_select      (W_wb_data_select)
+        .W_wb_data_sel         (W_wb_data_sel)
     );
     WB_stage u_wb_stage (
-        .W_wb_data_select      (W_wb_data_select),
+        .W_wb_data_sel         (W_wb_data_sel),
         .W_funct3              (W_funct3),
         .LD_data               (dm_data_out),     
         .W_alu_out             (W_alu_out),

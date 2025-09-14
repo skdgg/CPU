@@ -9,7 +9,7 @@ module MW_reg(
     input [2:0] M_funct3,
     input M_reg_write_enable,
     input M_reg_write_enable_f,
-    input M_wb_data_select,
+    input M_wb_data_sel,
 
     // Outputs to the WB stage
     output logic [31:0] W_alu_out,
@@ -18,7 +18,7 @@ module MW_reg(
     output logic [2:0] W_funct3,
     output logic W_reg_write_enable,
     output logic W_reg_write_enable_f,
-    output logic W_wb_data_select
+    output logic W_wb_data_sel
 );
 
     always_ff @(posedge clk or posedge rst) begin
@@ -29,7 +29,7 @@ module MW_reg(
             W_funct3 <= 3'd0;
             W_reg_write_enable <= 1'b0;
             W_reg_write_enable_f <= 1'b0;
-            W_wb_data_select <= 1'b0;
+            W_wb_data_sel <= 1'b0;
         end else begin
             W_alu_out <= M_alu_out;
             W_rd <= M_rd;
@@ -37,7 +37,7 @@ module MW_reg(
             W_funct3 <= M_funct3;
             W_reg_write_enable <= M_reg_write_enable;
             W_reg_write_enable_f <= M_reg_write_enable_f;
-            W_wb_data_select <= M_wb_data_select;
+            W_wb_data_sel <= M_wb_data_sel;
         end
     end
 

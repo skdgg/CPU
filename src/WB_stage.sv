@@ -4,7 +4,7 @@
 
 module WB_stage(
     // Inputs from the MW stage
-    input W_wb_data_select,
+    input W_wb_data_sel,
     input [2:0] W_funct3,
     input [31:0] LD_data,
     input [31:0] W_alu_out,
@@ -23,7 +23,7 @@ module WB_stage(
     mux2to1 #(.WIDTH(32)) mux2to1(
         .in0(W_alu_out),
         .in1(filter_data),
-        .sel(W_wb_data_select),
+        .sel(W_wb_data_sel),
         .out(W_rd_data)
     );
 

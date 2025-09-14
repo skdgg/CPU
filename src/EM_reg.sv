@@ -10,7 +10,7 @@ module EM_reg(
     input [2:0] E_funct3,
     input E_reg_write_enable,
     input E_reg_write_enable_f,
-    input E_wb_data_select,
+    input E_wb_data_sel,
     input [31:0] E_dm_write_enable,
     input E_web,
     // Data inputs from the EX stage
@@ -25,7 +25,7 @@ module EM_reg(
     output logic [2:0] M_funct3,
     output logic M_reg_write_enable,
     output logic M_reg_write_enable_f,
-    output logic M_wb_data_select,
+    output logic M_wb_data_sel,
     output logic [31:0] M_dm_write_enable,
     output logic M_web,
     // Data outputs to the MEM stage
@@ -41,7 +41,7 @@ module EM_reg(
             M_rd_f <= 5'd0;
             M_reg_write_enable <= 1'b0;
             M_reg_write_enable_f <= 1'b0;
-            M_wb_data_select <= 1'b0;
+            M_wb_data_sel <= 1'b0;
             M_dm_write_enable <= 32'd0;
             M_web <= 1'b0;
             M_alu_out <= 32'd0;
@@ -53,7 +53,7 @@ module EM_reg(
             M_funct3 <= E_funct3;
             M_reg_write_enable <= E_reg_write_enable;
             M_reg_write_enable_f <= E_reg_write_enable_f;
-            M_wb_data_select <= E_wb_data_select;
+            M_wb_data_sel <= E_wb_data_sel;
             M_dm_write_enable <= E_dm_write_enable;
             M_web <= E_web;
         end

@@ -61,7 +61,7 @@ module Exe_stage(
     output logic next_pc_sel,
     output logic [31:0] E_alu_out,
     output logic [31:0] E_alu_out_f,
-    output logic [31:0] E_DM_data,
+    output logic [31:0] E_dm_data,
     output logic [31:0] E_csr_out,
     output logic [31:0] jb_pc,
     //output for branch predictor update
@@ -223,6 +223,6 @@ module Exe_stage(
         .in0(forwarded_rs2_data_f),
         .in1(forwarded_rs2_data),
         .sel(E_op),
-        .out(E_DM_data)
+        .out(E_dm_data)
     );
 endmodule

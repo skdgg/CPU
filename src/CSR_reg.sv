@@ -31,9 +31,9 @@ always_ff @(posedge clk or posedge rst) begin
 end
 
 always_comb begin
-    unique case (immex[11:0])
+    case (immex[11:0])
         CSR_INSTRETH: csr_out = csr_instret[63:32];
-        CSR_INSTRET:  csr_out = csr_instret[31:0] + 32'd1; // pipeline補償
+        CSR_INSTRET:  csr_out = csr_instret[31:0] + 32'd1; 
         CSR_CYCLEH:   csr_out = csr_cycle  [63:32];
         CSR_CYCLE:    csr_out = csr_cycle  [31:0];
         default:      csr_out = 32'hFFFF_FFFF;

@@ -71,6 +71,7 @@ module CPU (
     logic D_jb_op1_sel;
     // EX Stage signals   
     logic [4:0]  E_rs1;
+    logic [2:0]  E_funct3;
     logic [4:0]  E_rs2;
     logic [4:0]  E_rs1_f;
     logic [4:0]  E_rs2_f;
@@ -79,11 +80,12 @@ module CPU (
     logic [31:0] E_rs1_data_f;
     logic [31:0] E_rs2_data_f;
     logic [4:0]  E_rd;
+    logic [4:0]  E_rd_f;
     logic [4:0]  E_alu_ctrl;
     logic [31:0] E_PC;
     logic [31:0] E_imm;  
     logic [6:0]  E_op;
-    logic [31:0] E_alu_out, E_alu_out_f, E_dm_data, E_csr_out;
+    logic [31:0] E_alu_out, E_dm_data;
     logic E_alu_op1_sel;
     logic E_alu_op2_sel;
     logic E_wb_data_sel;
@@ -126,7 +128,6 @@ module CPU (
     logic [31:0]        E_btb_target;
     logic               ex_update_en;
     logic               ex_actual_taken;
-    logic [31:0]        ex_pc;
     logic [31:0]        ex_actual_target;
     logic               redirect_valid;
     logic [31:0]        redirect_pc;
@@ -158,7 +159,7 @@ module CPU (
         .redirect_pc(redirect_pc),
         .ex_update_en(ex_update_en),
         .ex_actual_taken(ex_actual_taken),
-        .ex_pc(ex_pc),
+        .ex_pc(E_PC),
         .ex_actual_target(ex_actual_target),
         .pht_idx_ex(E_pht_idx),
         .F_pred_taken(F_pred_taken),
@@ -170,6 +171,7 @@ module CPU (
     FD_reg fd_reg (
         .clk(clk),
         .rst(rst),
+        .d_rst(d_rst),
         .stall(stall),
         .flush(flush),
         .F_PC(F_PC),
@@ -335,7 +337,6 @@ module CPU (
         .redirect_pc            (redirect_pc),
         .ex_update_en           (ex_update_en),
         .ex_actual_taken        (ex_actual_taken),
-        .ex_pc                  (ex_pc),
         .ex_actual_target       (ex_actual_target),
         // Forwarded data
         .E_rs1_data             (E_rs1_data),
@@ -364,9 +365,7 @@ module CPU (
         .stall                  (stall),
         .next_pc_sel            (next_pc_sel),
         .E_alu_out              (E_alu_out),
-        .E_alu_out_f            (E_alu_out_f),
         .E_dm_data              (E_dm_data),
-        .E_csr_out              (E_csr_out),
         .jb_pc                  (jb_pc)
     );
 

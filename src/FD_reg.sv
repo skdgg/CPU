@@ -1,6 +1,7 @@
 module FD_reg (
     input               clk,
     input               rst,
+    input               d_rst,
     input               stall,
     input               flush,
 
@@ -23,6 +24,13 @@ module FD_reg (
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             // On reset, clear the register's contents
+            D_PC <= 32'd0;
+            D_instruction <= 32'd0;
+            D_pred_taken <= 1'b0;
+            D_pht_idx <= 8'd0;
+            D_btb_hit <= 1'b0;
+            D_btb_target <= 32'd0;
+        end else if (~d_rst) begin
             D_PC <= 32'd0;
             D_instruction <= 32'd0;
             D_pred_taken <= 1'b0;

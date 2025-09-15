@@ -47,9 +47,11 @@ module EM_reg(
             M_alu_out <= 32'd0;
             M_dm_data <= 32'd0;
         end else begin
+            M_op <= E_op;
             M_alu_out <= E_alu_out;
             M_dm_data <= E_dm_data;
             M_rd <= E_rd;
+            M_rd_f <= E_rd_f;
             M_funct3 <= E_funct3;
             M_reg_write_enable <= E_reg_write_enable;
             M_reg_write_enable_f <= E_reg_write_enable_f;

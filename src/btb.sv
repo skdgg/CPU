@@ -30,11 +30,19 @@ module btb (
   btb_entry_t table [ENTRIES];
 
   // ---------- Index & Tag split ----------
-  logic [IDX_W-1:0] idx_if = pc_if[IDX_W+1:2];
-  logic [TAG_W-1:0] tag_if = pc_if[31:IDX_W+2];
+  logic [IDX_W-1:0] idx_if;
+  logic [TAG_W-1:0] tag_if;
 
-  logic [IDX_W-1:0] idx_ex = pc_ex[IDX_W+1:2];
-  logic [TAG_W-1:0] tag_ex = pc_ex[31:IDX_W+2];
+  logic [IDX_W-1:0] idx_ex;
+  logic [TAG_W-1:0] tag_ex;
+
+  always_comb begin
+    idx_if = pc_if[IDX_W+1:2];
+    tag_if = pc_if[31:IDX_W+2];
+
+    idx_ex = pc_ex[IDX_W+1:2];
+    tag_ex = pc_ex[31:IDX_W+2];
+  end
 
   // ---------- IF: combinational read ----------
   always_comb begin

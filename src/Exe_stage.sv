@@ -6,6 +6,7 @@
 `include "../src/JB_unit.sv"
 `include "../src/CSR_reg.sv"
 `include "../src/mux3to1.sv"
+`include "../src/mux3to1_aluout.sv"
 `include "../src/ALU_F.sv"
 `include "../src/ALU.sv"
 
@@ -60,9 +61,7 @@ module Exe_stage(
     output logic stall,
     output logic next_pc_sel,
     output logic [31:0] E_alu_out,
-    output logic [31:0] E_alu_out_f,
     output logic [31:0] E_dm_data,
-    output logic [31:0] E_csr_out,
     output logic [31:0] jb_pc,
     //output for branch predictor update
     output logic redirect_valid,
@@ -87,8 +86,16 @@ module Exe_stage(
     logic mis_dir;
     logic mis_tgt;
     logic mispredict;
-    //branch prediction 
 
+    logic [31:0] E_alu;
+    logic [31:0] E_alu_f;
+    logic [31:0] E_csr;
+
+    logic dm_sel;
+
+    always_comb begin
+        dm_sel = (E_op == 7'b0100111);
+    end
     always_comb begin
         ex_actual_target = jb_pc;
         is_branch = (E_op == 7'b1100011);         // RISC-V B-type
@@ -149,8 +156,8 @@ module Exe_stage(
         .M_RegWrite(M_reg_write_enable_f),
         .W_RegWrite(W_reg_write_enable_f),
         .E_rs_data(E_rs1_data_f),
-        .M_rd_data(M_rd_data_f),
-        .W_rd_data(W_rd_data_f),
+        .M_rd_data(M_rd_data),
+        .W_rd_data(W_rd_data),
         .newest_rs_data(forwarded_rs1_data_f)
     );
 
@@ -161,8 +168,8 @@ module Exe_stage(
         .M_RegWrite(M_reg_write_enable_f),
         .W_RegWrite(W_reg_write_enable_f),
         .E_rs_data(E_rs2_data_f),
-        .M_rd_data(M_rd_data_f),
-        .W_rd_data(W_rd_data_f),
+        .M_rd_data(M_rd_data),
+        .W_rd_data(W_rd_data),
         .newest_rs_data(forwarded_rs2_data_f)
     );
 
@@ -186,7 +193,7 @@ module Exe_stage(
         .alu_control(E_alu_ctrl),
         .alu_in1(alu_in1),
         .alu_in2(alu_in2),
-        .alu_out(E_alu_out),
+        .alu_out(E_alu),
         .pc_flag(pc_flag)
     );
 
@@ -195,7 +202,7 @@ module Exe_stage(
         .ALU_ctrl(E_alu_ctrl),
         .ALU_in1_f(forwarded_rs1_data_f),
         .ALU_in2_f(forwarded_rs2_data_f),
-        .ALU_out_f(E_alu_out_f)
+        .ALU_out_f(E_alu_f)
     );
 
     // Instantiate the CSR unit
@@ -204,7 +211,7 @@ module Exe_stage(
         .rst(rst),
         .pc(E_PC),
         .immex(E_imm),
-        .csr_out(E_csr_out)
+        .csr_out(E_csr)
     );
     mux2to1 mux2to1_jbsrc(
         .in0(forwarded_rs1_data),
@@ -220,9 +227,18 @@ module Exe_stage(
     );
 
     mux2to1 mux2to1_DM_sel(
-        .in0(forwarded_rs2_data_f),
-        .in1(forwarded_rs2_data),
-        .sel(E_op),
+        .in0(forwarded_rs2_data),
+        .in1(forwarded_rs2_data_f),
+        .sel(dm_sel),
         .out(E_dm_data)
+    );
+
+    mux3to1_aluout mux_aluout(
+        .E_op(E_op),
+        .E_alu_ctrl(E_alu_ctrl),
+        .E_alu_f(E_alu_f),
+        .E_alu(E_alu),
+        .E_csr(E_csr),
+        .E_alu_out(E_alu_out)
     );
 endmodule

@@ -100,7 +100,6 @@ module CPU (
     logic        M_reg_write_enable, M_reg_write_enable_f;
     logic        M_wb_data_sel;
     logic [31:0] M_dm_write_enable;
-    logic [31:0] M_alu_out, M_DM_data;
     logic [31:0] M_rd_data; 
 
     // WB Stage signals
@@ -387,9 +386,7 @@ module CPU (
 
         // Data from EX
         .E_alu_out              (E_alu_out),
-        .E_alu_out_f            (E_alu_out_f),
         .E_dm_data              (E_dm_data),
-        .E_csr_out              (E_csr_out),
 
         // To MEM
         .M_op                   (M_op),

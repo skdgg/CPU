@@ -15,9 +15,7 @@ module EM_reg(
     input E_web,
     // Data inputs from the EX stage
     input [31:0] E_alu_out,
-    input [31:0] E_alu_out_f,
     input [31:0] E_dm_data,
-    input [31:0] E_csr_out,
     // Outputs to the MEM stage
     output logic [6:0] M_op,
     output logic [4:0] M_rd,

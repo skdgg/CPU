@@ -31,7 +31,7 @@ module branch_gshare (
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
       for (i = 0; i < 256; i++) pht[i] <= 2'b01; // weak-not-taken
-      ghr <= '0;
+      ghr <= 8'd0;
     end else if (ex_update_en) begin
       // PHT saturating +/- 1 @ IF's index
       unique case (ex_actual_taken)

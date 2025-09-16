@@ -291,6 +291,7 @@ always_comb begin
                 3'b101: alu_control = 5'b01110; // BGE
                 3'b110: alu_control = 5'b01111; // BLTU
                 3'b111: alu_control = 5'b10000; // BGEU
+                default:alu_control = 5'b11111; // default
             endcase
         end
 

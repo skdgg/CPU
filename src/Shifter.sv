@@ -6,8 +6,8 @@ module Shifter (
     input  logic [2:0]  M_funct3,
     input  logic [31:0] M_dm_data,
     input  logic [31:0] M_dm_write_enable,
-    output logic [15:0] im_addr,
-    output logic [15:0] dm_addr,
+    output logic [13:0] im_addr,
+    output logic [13:0] dm_addr,
     output logic [31:0] dm_data_in,
     output logic [31:0] dm_bweb  // byte write enable (active-low
 

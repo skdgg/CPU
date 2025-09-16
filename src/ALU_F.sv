@@ -18,7 +18,8 @@ module ALU_F(
 
     logic  [7:0]  exp_diff;
     logic [48:0]  fa_frac49, fb_frac49_shifted;
-    logic [48:0]  frac_sum;             
+    logic [48:0]  frac_sum;    
+    logic [48:0]  frac_norm;         
     logic  [5:0]  msb_index_base, msb_pos, lshift_amt;
     logic  [7:0]  res_exp_pre, res_exp_adj;
     logic         res_sign;
@@ -99,25 +100,23 @@ module ALU_F(
 
     always_comb begin
         res_exp_pre = fa_e + 8'd1;
+        res_exp_adj = 8'd0;
+        res_frac23  = 23'd0;
+        frac_norm   = 49'd0;
 
         if (msb_pos == 6'd48) begin
-            res_exp_adj = res_exp_pre;
-
-            if      (frac_sum[24]    == 1'b0)            res_frac23 = frac_sum[47:25];
-            else if (frac_sum[24:22] >  3'b101)          res_frac23 = frac_sum[47:25] + 23'd1;
-            else if (frac_sum[25])                       res_frac23 = frac_sum[47:25] + 23'd1;
-            else                                         res_frac23 = frac_sum[47:25];
+          frac_norm  = frac_sum;                 // 已對齊到 bit48，不用移
+          res_exp_adj = res_exp_pre;
+        end else begin
+          frac_norm  = frac_sum << lshift_amt;   // 左移規格化
+          res_exp_adj = res_exp_pre - lshift_amt;
         end
-        else begin
-            logic [48:0] frac_norm;
-            frac_norm  = frac_sum << lshift_amt;
-            res_exp_adj = res_exp_pre - lshift_amt;
-
-            if      (frac_norm[24]    == 1'b0)           res_frac23 = frac_norm[47:25];
-            else if (frac_norm[24:22] >  3'b101)         res_frac23 = frac_norm[47:25] + 23'd1;
-            else if (frac_norm[25])                      res_frac23 = frac_norm[47:25] + 23'd1;
-            else                                         res_frac23 = frac_norm[47:25];
-        end
+    
+        // 捨入：統一以 frac_norm 為基準
+        if      (frac_norm[24]    == 1'b0)           res_frac23 = frac_norm[47:25];
+        else if (frac_norm[24:22] >  3'b101)         res_frac23 = frac_norm[47:25] + 23'd1;
+        else if (frac_norm[25])                      res_frac23 = frac_norm[47:25] + 23'd1;
+        else                                         res_frac23 = frac_norm[47:25];
     end
 
     always_comb begin

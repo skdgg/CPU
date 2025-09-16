@@ -11,11 +11,11 @@ module mux3to1_aluout(
 always_comb
 begin
     if(E_alu_ctrl == 5'd22 || E_alu_ctrl == 5'd23)
-        E_alu_out <= E_alu_f;
+        E_alu_out = E_alu_f;
     else if (E_op == 7'b1110011)
-        E_alu_out <= E_csr;
+        E_alu_out = E_csr;
     else
-        E_alu_out <= E_alu;  
+        E_alu_out = E_alu;
 end
 
 endmodule

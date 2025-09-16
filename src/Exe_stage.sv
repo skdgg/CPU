@@ -68,7 +68,6 @@ module Exe_stage(
     output logic [31:0] redirect_pc,
     output logic ex_update_en,
     output logic ex_actual_taken,
-    output logic [31:0] ex_pc,
     output logic [31:0] ex_actual_target
 );
 

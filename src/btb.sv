@@ -22,13 +22,13 @@ module btb (
 
   // ---------- Entry definition ----------
   typedef struct packed {
-    logic                 valid;
     logic [TAG_W-1:0]     tag;
     logic [31:0]          target;
-  } btb_entry_t;
+  } btb_line_t;
 
-  btb_entry_t table [ENTRIES];
-
+  btb_line_t btb_data [ENTRIES];
+  logic [ENTRIES-1:0] btb_valid;
+  
   // ---------- Index & Tag split ----------
   logic [IDX_W-1:0] idx_if;
   logic [TAG_W-1:0] tag_if;
@@ -46,22 +46,25 @@ module btb (
 
   // ---------- IF: combinational read ----------
   always_comb begin
-      hit_if    = table[idx_if].valid && (table[idx_if].tag == tag_if);
-      target_if = table[idx_if].target;
+      hit_if    = btb_valid[idx_if] && (btb_data[idx_if].tag == tag_if);
+      target_if = hit_if ? btb_data[idx_if].target : 32'b0;
   end
 
-
-  // ---------- EX: synchronous write / invalidate ----------
-  integer i;
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
-      for (i = 0; i < ENTRIES; i++) table[i].valid <= 1'b0;
-    end
-    else if (update_en) begin
-      table[idx_ex].valid  <= 1'b1;
-      table[idx_ex].tag    <= tag_ex;
-      table[idx_ex].target <= target_ex;
+      btb_valid <= 256'd0;     
+    end else if (update_en) begin
+      btb_valid[idx_ex] <= 1'b1;
     end
   end
+  
+  // ---------- EX: synchronous write ----------
+  always_ff @(posedge clk) begin
+    if (update_en) begin
+      btb_data[idx_ex].tag    <= tag_ex;
+      btb_data[idx_ex].target <= target_ex;
+    end
+  end
+
 
 endmodule

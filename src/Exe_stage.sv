@@ -90,6 +90,8 @@ module Exe_stage(
     logic [31:0] E_alu;
     logic [31:0] E_alu_f;
     logic [31:0] E_csr;
+    logic predT_actNT_nohit;
+    logic dir_needs_flush;
 
     logic dm_sel;
 
@@ -103,10 +105,13 @@ module Exe_stage(
                         : (is_branch ? pc_flag : 1'b0);
         ex_update_en = (is_branch | E_JAL | E_JALR);
         mis_dir = (ex_actual_taken != E_pred_taken);
+        predT_actNT_nohit = (~ex_actual_taken) & E_pred_taken & (~E_btb_hit);
+        dir_needs_flush = mis_dir & ~predT_actNT_nohit;
         mis_tgt = (ex_actual_taken & E_pred_taken) &
                 ( (!E_btb_hit) | (E_btb_target != ex_actual_target) );
-        mispredict = (mis_dir | mis_tgt);
+        mispredict = dir_needs_flush | mis_tgt;
     end
+
     always_comb begin
         redirect_valid = mispredict;
         redirect_pc    = ex_actual_taken ? ex_actual_target

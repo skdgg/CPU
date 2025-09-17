@@ -8,6 +8,7 @@ module IF_stage (
     input               clk,
     input               rst,
     input               stall,
+    input               flush,
     //input               next_pc_sel,
     //input        [31:0] jb_pc,
 	output logic d_rst,
@@ -43,6 +44,31 @@ module IF_stage (
     logic [31:0] jb_pc_int;
     logic        next_pc_sel_int;
     logic        pc_stall;
+    //for bp accuracy
+    logic if_fire;
+    logic btb_need;
+
+    logic [63:0] bp_total, bp_hits, bp_misses;
+
+    always_comb begin
+        if_fire      = ~flush & ~pc_stall;  
+        btb_need     = pred_taken_if;
+    end
+
+    always_ff @(posedge clk or posedge rst) begin
+    if (rst) begin
+        bp_total <= '0; 
+        bp_hits <= '0; 
+        bp_misses <= '0;
+    end else begin
+        if (if_fire && btb_need || redirect_valid) begin
+            bp_total <= bp_total + 1;
+            if (btb_hit_if)  bp_hits <= bp_hits + 1;
+        end
+    end
+    end
+
+    //
     always_ff @(posedge clk or posedge rst) 
     begin
         if(rst) d_rst <= 1'b0;

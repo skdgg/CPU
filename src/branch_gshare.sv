@@ -17,11 +17,11 @@ module branch_gshare (
 
   // ---- state ----
   logic [1:0]   pht [0:255];   // 2-bit saturating counters
-  logic [7:0]   ghr;                  // global history
+  logic [7:0]   ghr;         // global history
   logic [7:0]   pc_idx;
   // ---- IF: XOR hash = PC_low_N ^ GHR ----
   always_comb begin
-    pc_idx           = pc_if[9:2];     // ignore [1:0] (word aligned)
+    pc_idx           = pc_if[9:2] ^ pc_if[31:24] ;     // ignore [1:0] (word aligned)
     pht_idx_if       = pc_idx ^ ghr;   // <-- XOR hash
     pred_taken_if    = pht[pht_idx_if][1];    // MSB = prediction
   end
@@ -33,7 +33,6 @@ module branch_gshare (
       for (i = 0; i < 256; i++) pht[i] <= 2'b01; // weak-not-taken
       ghr <= 8'd0;
     end else if (ex_update_en) begin
-      // PHT saturating +/- 1 @ IF's index
       unique case (ex_actual_taken)
         1'b1: if (pht[pht_idx_ex] != 2'b11) pht[pht_idx_ex] <= pht[pht_idx_ex] + 2'b01;
         1'b0: if (pht[pht_idx_ex] != 2'b00) pht[pht_idx_ex] <= pht[pht_idx_ex] - 2'b01;

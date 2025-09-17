@@ -148,6 +148,7 @@ module CPU (
         .clk(clk),
         .rst(rst),
         .stall(stall),
+        .flush(flush),
         //.next_pc_sel(next_pc_sel),
         //.jb_pc(jb_pc),
         .next_pc(next_pc),

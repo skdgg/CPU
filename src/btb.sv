@@ -30,11 +30,11 @@ module btb (
   logic [ENTRIES-1:0] btb_valid;
   
   // ---------- Index & Tag split ----------
-  logic [7:0]         d_if, d_ex;      
+  //logic [7:0]         d_if, d_ex;      
   logic [IDX_W-1:0]   idx_if, idx_ex;     
   logic [TAG_W-1:0]   tag_if, tag_ex;    
 
-  always_comb begin
+  /*always_comb begin
     d_if = pc_if[9:2] ^ pc_if[31:24];
     d_ex = pc_ex[9:2] ^ pc_ex[31:24];
   end
@@ -45,14 +45,14 @@ module btb (
   assign idx_ex[1] = d_ex[1] ^ d_ex[3] ^ d_ex[5] ^ d_ex[7];
   
   assign tag_if = pc_if[31:IDX_W+2];
-  assign tag_ex = pc_ex[31:IDX_W+2];
-  /*always_comb begin
+  assign tag_ex = pc_ex[31:IDX_W+2];*/
+  always_comb begin
     idx_if = pc_if[IDX_W+1:2];
     tag_if = pc_if[31:IDX_W+2];
 
     idx_ex = pc_ex[IDX_W+1:2];
     tag_ex = pc_ex[31:IDX_W+2];
-  end*/
+  end
 
   // ---------- IF: combinational read ----------
   always_comb begin

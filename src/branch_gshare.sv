@@ -1,8 +1,8 @@
 // branch_gshare.sv (parameterized XOR-hash / GShare)
 module branch_gshare #(
   parameter int PHT_ENTRIES = 32,                   
-  parameter int PHT_BITS    = 8,   
-  parameter int GHR_BITS    = 5              
+  parameter int PHT_BITS    = 5,   
+  parameter int GHR_BITS    = PHT_BITS             
 ) (
   input  logic clk,
   input  logic rst,
@@ -10,21 +10,20 @@ module branch_gshare #(
   // IF: predict
   input  logic [31:0] pc_if,
   output logic        pred_taken_if,
-  output logic [GHR_BITS-1:0] pht_idx_if,  // carry to EX
+  output logic [PHT_BITS-1:0] pht_idx_if,  // carry to EX
 
   // EX: update
   input  logic             ex_update_en,
   input  logic             ex_actual_taken,
-  input  logic [GHR_BITS-1:0] pht_idx_ex
+  input  logic [PHT_BITS-1:0] pht_idx_ex
 );
 
   // ---- state ----
   logic [1:0] pht [0:PHT_ENTRIES-1];   // 2-bit saturating counters
   logic [GHR_BITS-1:0] ghr;            // global history
   logic [PHT_BITS-1:0] pc_idx;
-  logic [4:0] idx5_if;
   // ---- IF: XOR hash = (pc[9:2] ^ pc[31:24]) -> fold to 5b -> xor GHR ----
-  always_comb begin
+ /* always_comb begin
     pc_idx = pc_if[9:2] ^ pc_if[31:24];  // 8-bit base hash
   
     // 5-bit¡G(0^5, 1^6, 2^7, 3, 4)
@@ -37,13 +36,13 @@ module branch_gshare #(
     pht_idx_if    = idx5_if ^ ghr[4:0];
     pred_taken_if = pht[pht_idx_if][1];   // MSB = prediction
   end
-  
-/*  // ---- IF: XOR hash = PC_low_N ^ GHR ----
+  */
+  // ---- IF: XOR hash = PC_low_N ^ GHR ----
   always_comb begin
-    pc_idx        = pc_if[9:2] ^ pc_if[31:24];
+    pc_idx        = pc_if[PHT_BITS+1:2] ^ pc_if[31 -: PHT_BITS];
     pht_idx_if    = pc_idx ^ ghr;
     pred_taken_if = pht[pht_idx_if][1];   // MSB = prediction
-  end*/
+  end
 
 
   // ---- EX: train PHT & update GHR ----

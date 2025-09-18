@@ -105,14 +105,13 @@ module ALU_F(
         frac_norm   = 49'd0;
 
         if (msb_pos == 6'd48) begin
-          frac_norm  = frac_sum;                 // 已對齊到 bit48，不用移
+          frac_norm  = frac_sum;                 
           res_exp_adj = res_exp_pre;
         end else begin
-          frac_norm  = frac_sum << lshift_amt;   // 左移規格化
+          frac_norm  = frac_sum << lshift_amt;  
           res_exp_adj = res_exp_pre - lshift_amt;
         end
     
-        // 捨入：統一以 frac_norm 為基準
         if      (frac_norm[24]    == 1'b0)           res_frac23 = frac_norm[47:25];
         else if (frac_norm[24:22] >  3'b101)         res_frac23 = frac_norm[47:25] + 23'd1;
         else if (frac_norm[25])                      res_frac23 = frac_norm[47:25] + 23'd1;

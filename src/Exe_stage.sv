@@ -16,7 +16,7 @@ module Exe_stage(
 
     // branch prediction signals 
     input               E_pred_taken,
-    input        [7:0]  E_pht_idx,   
+    input        [4:0]  E_pht_idx,   
     input               E_btb_hit,   
     input        [31:0] E_btb_target,
     

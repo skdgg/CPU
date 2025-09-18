@@ -114,15 +114,15 @@ module CPU (
 
     // branch prediction signals
     logic               F_pred_taken;
-    logic [7:0]         F_pht_idx;
+    logic [4:0]         F_pht_idx;
     logic               F_btb_hit;
     logic [31:0]        F_btb_target;
     logic               D_pred_taken;
-    logic [7:0]         D_pht_idx;
+    logic [4:0]         D_pht_idx;
     logic               D_btb_hit;
     logic [31:0]        D_btb_target;
     logic               E_pred_taken;
-    logic [7:0]         E_pht_idx;
+    logic [4:0]         E_pht_idx;
     logic               E_btb_hit;
     logic [31:0]        E_btb_target;
     logic               ex_update_en;

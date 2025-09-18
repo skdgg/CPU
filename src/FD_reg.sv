@@ -9,14 +9,14 @@ module FD_reg (
     input        [31:0] F_PC,
     input        [31:0] F_instruction,
     input               F_pred_taken,
-    input        [7:0]  F_pht_idx,
+    input        [4:0]  F_pht_idx,
     input               F_btb_hit,
     input        [31:0] F_btb_target,
     // Data to ID stage
     output logic [31:0] D_PC,
     output logic [31:0] D_instruction,
     output logic        D_pred_taken,
-    output logic [7:0]  D_pht_idx,
+    output logic [4:0]  D_pht_idx,
     output logic        D_btb_hit,
     output logic [31:0] D_btb_target
 );
@@ -27,14 +27,14 @@ module FD_reg (
             D_PC <= 32'd0;
             D_instruction <= 32'd0;
             D_pred_taken <= 1'b0;
-            D_pht_idx <= 8'd0;
+            D_pht_idx <= 5'd0;
             D_btb_hit <= 1'b0;
             D_btb_target <= 32'd0;
         end else if (~d_rst) begin
             D_PC <= 32'd0;
             D_instruction <= 32'd0;
             D_pred_taken <= 1'b0;
-            D_pht_idx <= 8'd0;
+            D_pht_idx <= 5'd0;
             D_btb_hit <= 1'b0;
             D_btb_target <= 32'd0;
         end else if (flush) begin
@@ -42,7 +42,7 @@ module FD_reg (
             D_PC <= 32'd0;
             D_instruction <= 32'd0;
             D_pred_taken <= 1'b0;
-            D_pht_idx <= 8'd0;
+            D_pht_idx <= 5'd0;
             D_btb_hit <= 1'b0;  
             D_btb_target <= 32'd0;
         end else if (!stall) begin

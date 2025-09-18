@@ -1,0 +1,88 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay min
+        -max_paths 1
+        -sort_by group
+Design : top
+Version: P-2019.03-SP1-1
+Date   : Thu Sep 18 11:28:40 2025
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: ff0p88v125c   Library: N16ADFP_StdCellff0p88v125c
+Wire Load Model Mode: segmented
+
+  Startpoint: cpu/if_stage/pc_reg/pc_out_reg_4_
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: IM1/i_SRAM (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  SRAM_wrapper_0     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  CSR_reg            ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  F_Reg_file         ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  Reg_file           ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  btb                ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  branch_gshare      ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  PC                 ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  MW_reg             ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  EM_reg             ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  Exe_stage          ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  DE_reg             ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  ID_stage           ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  FD_reg             ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  IF_stage           ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  SRAM_wrapper_1     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  top                ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  CPU                ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  PC_adder_DW01_add_0
+                     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  PC_adder           ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  mux2to1_PC         ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  Shifter            ZeroWireload          N16ADFP_StdCellss0p72vm40c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                 0.0000     0.0000
+  clock network delay (ideal)                           0.2000     0.2000
+  cpu/if_stage/pc_reg/pc_out_reg_4_/CP (DFCNQD2BWP16P90LVT)
+                                                        0.0000 #   0.2000 r
+  cpu/if_stage/pc_reg/pc_out_reg_4_/Q (DFCNQD2BWP16P90LVT)
+                                                        0.0565     0.2565 r
+  cpu/if_stage/pc_reg/U51/Z (CKBD1BWP20P90)             0.0139     0.2704 r
+  cpu/if_stage/pc_reg/U55/Z (CKBD1BWP16P90LVT)          0.0089     0.2794 r
+  cpu/if_stage/pc_reg/U54/Z (CKBD1BWP16P90LVT)          0.0084     0.2878 r
+  cpu/if_stage/pc_reg/U53/Z (CKBD1BWP16P90LVT)          0.0084     0.2961 r
+  cpu/if_stage/pc_reg/U52/Z (CKBD1BWP16P90LVT)          0.0188     0.3149 r
+  cpu/if_stage/pc_reg/pc_out[4] (PC)                    0.0000     0.3149 r
+  cpu/if_stage/mux2to1_PC/F_PC[4] (mux2to1_PC)          0.0000     0.3149 r
+  cpu/if_stage/mux2to1_PC/U12/ZN (IOA21D1BWP16P90LVT)   0.0172     0.3322 r
+  cpu/if_stage/mux2to1_PC/out[4] (mux2to1_PC)           0.0000     0.3322 r
+  cpu/if_stage/next_pc[4] (IF_stage)                    0.0000     0.3322 r
+  cpu/shifter/next_pc[4] (Shifter)                      0.0000     0.3322 r
+  cpu/shifter/U138/Z (CKBD1BWP16P90LVT)                 0.0109     0.3430 r
+  cpu/shifter/im_addr[2] (Shifter)                      0.0000     0.3430 r
+  cpu/im_addr[2] (CPU)                                  0.0000     0.3430 r
+  IM1/A[2] (SRAM_wrapper_1)                             0.0000     0.3430 r
+  IM1/i_SRAM/A[2] (TS1N16ADFPCLLLVTA512X45M4SWSHOD)     0.0000     0.3430 r
+  data arrival time                                                0.3430
+
+  clock clk (rise edge)                                 0.0000     0.0000
+  clock network delay (ideal)                           0.2000     0.2000
+  clock uncertainty                                     0.0200     0.2200
+  IM1/i_SRAM/CLK (TS1N16ADFPCLLLVTA512X45M4SWSHOD)      0.0000     0.2200 r
+  library hold time                                     0.1230     0.3430
+  data required time                                               0.3430
+  --------------------------------------------------------------------------
+  data required time                                               0.3430
+  data arrival time                                               -0.3430
+  --------------------------------------------------------------------------
+  slack (MET)                                                      0.0000
+
+
+1

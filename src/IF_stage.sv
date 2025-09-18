@@ -23,17 +23,17 @@ module IF_stage (
     input               ex_actual_taken,    
     input        [31:0] ex_pc,               
     input        [31:0] ex_actual_target,    
-    input        [7:0]  pht_idx_ex,
+    input        [4:0]  pht_idx_ex,
 
     output logic        F_pred_taken,
-    output logic [7:0]  F_pht_idx,
+    output logic [4:0]  F_pht_idx,
     output logic        F_btb_hit,
     output logic [31:0] F_btb_target
 
 );
     logic [31:0] pc_plus_4_out;
 
-    localparam int N = $clog2(256);//SIZE of PHT
+    localparam int N = $clog2(32);//SIZE of PHT
     logic        pred_taken_if;
     logic [N-1:0]pht_idx_if;
 
@@ -45,7 +45,7 @@ module IF_stage (
     logic        next_pc_sel_int;
     logic        pc_stall;
     //for bp accuracy
-    logic if_fire;
+    /*logic if_fire;
     logic btb_need;
 
     logic [63:0] bp_total, bp_hits, bp_misses;
@@ -67,7 +67,7 @@ module IF_stage (
         end
     end
     end
-
+*/
     //
     always_ff @(posedge clk or posedge rst) 
     begin

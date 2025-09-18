@@ -35,7 +35,7 @@ module DE_reg(
     input D_web,
     //branch prediction signals
     input               D_pred_taken,
-    input        [7:0]  D_pht_idx,
+    input        [4:0]  D_pht_idx,
     input               D_btb_hit,
     input        [31:0] D_btb_target,
 
@@ -67,7 +67,7 @@ module DE_reg(
     output logic E_web,
     //branch prediction signals
     output logic        E_pred_taken,
-    output logic [7:0]  E_pht_idx,   
+    output logic [4:0]  E_pht_idx,   
     output logic        E_btb_hit,   
     output logic [31:0] E_btb_target
 );
@@ -100,7 +100,7 @@ module DE_reg(
             E_rs1_f <= 5'd0;
             E_rs2_f <= 5'd0;
             E_pred_taken <= 1'b0;
-            E_pht_idx <= 8'd0;
+            E_pht_idx <= 5'd0;
             E_btb_hit <= 1'b0;
             E_btb_target <= 32'd0;
         end else if (flush || stall) begin
@@ -131,7 +131,7 @@ module DE_reg(
             E_rs1_f <= 5'd0;
             E_rs2_f <= 5'd0;
             E_pred_taken <= 1'b0;
-            E_pht_idx <= 8'd0;
+            E_pht_idx <= 5'd0;
             E_btb_hit <= 1'b0;  
             E_btb_target <= 32'd0;
         end else begin

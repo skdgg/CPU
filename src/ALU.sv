@@ -1,132 +1,100 @@
 module ALU(
-    input [4:0] alu_control, // Control signal for the ALU
-    input [31:0] alu_in1,     // First operand
-    input [31:0] alu_in2,     // Second operand
-
-    output logic [31:0] alu_out,   // ALU output
-    output logic pc_flag      // PC flag for branch instructions
+    input  logic [4:0]  alu_control,
+    input  logic [31:0] alu_in1,
+    input  logic [31:0] alu_in2,
+    output logic [31:0] alu_out,
+    output logic        pc_flag
 );
 
-logic [63:0] alu_reg; // Register for multiplication results
+  logic sel_ADD, sel_SUB, sel_SLL, sel_SLT, sel_SLTU, sel_XOR, sel_SRL, sel_SRA;
+  logic sel_OR,  sel_AND, sel_JLINK, sel_BEQ, sel_BNE, sel_BLT, sel_BGE, sel_BLTU, sel_BGEU;
+  logic sel_MUL, sel_MULH, sel_MULHSU, sel_MULHU, sel_LUI;
 
-always_comb begin
-    case(alu_control)
-        5'b00000: begin  // ADD, ADDI, LW, SW, AUIPC, LUI, JAL
-            alu_reg = 64'd0;
-            alu_out = alu_in1 + alu_in2;
-            pc_flag = 1'b0;
-        end
-        5'b00001: begin  // SUB
-            alu_reg = 64'd0;
-            alu_out = $signed(alu_in1) - $signed(alu_in2);
-            pc_flag = 1'b0;
-        end
-        5'b00010: begin  // SLL, SLLI
-            alu_reg = 64'd0;
-            alu_out = alu_in1 << alu_in2[4:0];
-            pc_flag = 1'b0;
-        end
-        5'b00011: begin  // SLT, SLTI
-            alu_reg = 64'd0;
-            alu_out = ($signed(alu_in1) < $signed(alu_in2)) ? 32'b1 : 32'b0;
-            pc_flag = 1'b0;
-        end
-        5'b00100: begin  // SLTU, SLTIU
-            alu_reg = 64'd0;
-            alu_out = (alu_in1 < alu_in2) ? 32'b1 : 32'b0;
-            pc_flag = 1'b0;
-        end
-        5'b00101: begin  // XOR, XORI
-            alu_reg = 64'd0;
-            alu_out = alu_in1 ^ alu_in2;
-            pc_flag = 1'b0;
-        end
-        5'b00110: begin  // SRL, SRLI
-            alu_reg = 64'd0;
-            alu_out = alu_in1 >> alu_in2[4:0];
-            pc_flag = 1'b0;
-        end
-        5'b00111: begin  // SRA, SRAI
-            alu_reg = 64'd0;
-            alu_out = $signed(alu_in1) >>> alu_in2[4:0];
-            pc_flag = 1'b0;
-        end
-        5'b01000: begin  // OR, ORI
-            alu_reg = 64'd0;
-            alu_out = alu_in1 | alu_in2;
-            pc_flag = 1'b0;
-        end
-        5'b01001: begin  // AND, ANDI
-            alu_reg = 64'd0;
-            alu_out = alu_in1 & alu_in2;
-            pc_flag = 1'b0;
-        end
-        5'b01010: begin  // JALR, JAL
-            alu_reg = 64'd0;
-            alu_out = alu_in1 + 32'd4;
-            pc_flag = 1'b0;
-        end
-        5'b01011: begin  // BEQ
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = (alu_in1 == alu_in2) ? 1'b1 : 1'b0;
-        end
-        5'b01100: begin  // BNE
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = (alu_in1 != alu_in2) ? 1'b1 : 1'b0;
-        end
-        5'b01101: begin  // BLT
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = ($signed(alu_in1) < $signed(alu_in2)) ? 1'b1 : 1'b0;
-        end
-        5'b01110: begin  // BGE
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = ($signed(alu_in1) >= $signed(alu_in2)) ? 1'b1 : 1'b0;
-        end
-        5'b01111: begin  // BLTU
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = (alu_in1 < alu_in2) ? 1'b1 : 1'b0;
-        end
-        5'b10000: begin  // BGEU
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = (alu_in1 >= alu_in2) ? 1'b1 : 1'b0;
-        end
-        5'b10001: begin // MUL
-            alu_reg = alu_in1 * alu_in2;
-            alu_out = alu_reg[31:0];
-            pc_flag = 1'b0;
-        end
-        5'b10010: begin // MULH
-            alu_reg = {{32{alu_in1[31]}},alu_in1} * {{32{alu_in2[31]}},alu_in2};
-            alu_out = alu_reg[63:32];
-            pc_flag = 1'b0;
-        end
-        5'b10011: begin // MULHSU
-            alu_reg = {{32{alu_in1[31]}},alu_in1} * alu_in2;
-            alu_out = alu_reg[63:32];
-            pc_flag = 1'b0;
-        end
-        5'b10100: begin // MULHU
-            alu_reg = alu_in1 * alu_in2;
-            alu_out = alu_reg[63:32];
-            pc_flag = 1'b0;
-        end
-        5'b10101: begin // LUI
-            alu_reg = 64'd0;
-            alu_out = alu_in2;
-            pc_flag = 1'b0;
-        end
-        default: begin  // default
-            alu_reg = 64'd0;
-            alu_out = 32'd0;
-            pc_flag = 1'b0;
-        end
-    endcase
-end
+  assign sel_ADD   = (alu_control == 5'b00000); 
+  assign sel_SUB   = (alu_control == 5'b00001);
+  assign sel_SLL   = (alu_control == 5'b00010);
+  assign sel_SLT   = (alu_control == 5'b00011);
+  assign sel_SLTU  = (alu_control == 5'b00100);
+  assign sel_XOR   = (alu_control == 5'b00101);
+  assign sel_SRL   = (alu_control == 5'b00110);
+  assign sel_SRA   = (alu_control == 5'b00111);
+  assign sel_OR    = (alu_control == 5'b01000);
+  assign sel_AND   = (alu_control == 5'b01001);
+  assign sel_JLINK = (alu_control == 5'b01010); 
+  assign sel_BEQ   = (alu_control == 5'b01011);
+  assign sel_BNE   = (alu_control == 5'b01100);
+  assign sel_BLT   = (alu_control == 5'b01101);
+  assign sel_BGE   = (alu_control == 5'b01110);
+  assign sel_BLTU  = (alu_control == 5'b01111);
+  assign sel_BGEU  = (alu_control == 5'b10000);
+  assign sel_MUL   = (alu_control == 5'b10001);
+  assign sel_MULH  = (alu_control == 5'b10010);
+  assign sel_MULHSU= (alu_control == 5'b10011);
+  assign sel_MULHU = (alu_control == 5'b10100);
+  assign sel_LUI   = (alu_control == 5'b10101);
+
+  logic [31:0] add_r, sub_r, sll_r, srl_r, sra_r, xor_r, or_r, and_r, slt_r, sltu_r, jlink_r, lui_r;
+  assign add_r   = alu_in1 + alu_in2;
+  assign sub_r   = $signed(alu_in1) - $signed(alu_in2);
+  assign sll_r   = alu_in1 <<  alu_in2[4:0];
+  assign srl_r   = alu_in1 >>  alu_in2[4:0];
+  assign sra_r   = $signed(alu_in1) >>> alu_in2[4:0];
+  assign xor_r   = alu_in1 ^  alu_in2;
+  assign or_r    = alu_in1 |  alu_in2;
+  assign and_r   = alu_in1 &  alu_in2;
+  assign slt_r   = ($signed(alu_in1) <  $signed(alu_in2)) ? 32'd1 : 32'd0;
+  assign sltu_r  = (alu_in1          <  alu_in2)          ? 32'd1 : 32'd0;
+  assign jlink_r = alu_in1 + 32'd4;
+  assign lui_r   = alu_in2;
+
+  logic signed [63:0] a_s, b_s, mul_ss, mul_su;
+  logic        [63:0] a_u, b_u, mul_uu;
+  assign a_s = $signed({{32{alu_in1[31]}}, alu_in1});
+  assign b_s = $signed({{32{alu_in2[31]}}, alu_in2});
+  assign a_u = {32'd0, alu_in1};
+  assign b_u = {32'd0, alu_in2};
+
+  assign mul_ss = a_s * b_s;                    // signed * signed
+  assign mul_su = a_s * $signed(b_u);           // signed * unsigned
+  assign mul_uu = a_u * b_u;                    // unsigned * unsigned
+
+  logic eq, slt_b, ult_b;
+  assign eq    = (alu_in1 == alu_in2);
+  assign slt_b = ($signed(alu_in1) <  $signed(alu_in2));
+  assign ult_b = (alu_in1          <  alu_in2);
+
+  assign pc_flag =
+      (sel_BEQ  &  eq)  |
+      (sel_BNE  & ~eq)  |
+      (sel_BLT  &  slt_b) |
+      (sel_BGE  & ~slt_b) |
+      (sel_BLTU &  ult_b) |
+      (sel_BGEU & ~ult_b);
+
+  // ---------------- AND/OR gating ----------------
+  logic [31:0] g_add, g_sub, g_sll, g_slt, g_sltu, g_xor, g_srl, g_sra, g_or, g_and, g_jlink, g_lui;
+  logic [31:0] g_mul, g_mulh, g_mulhsu, g_mulhu;
+
+  assign g_add    = {32{sel_ADD   }} & add_r;
+  assign g_sub    = {32{sel_SUB   }} & sub_r;
+  assign g_sll    = {32{sel_SLL   }} & sll_r;
+  assign g_slt    = {32{sel_SLT   }} & slt_r;
+  assign g_sltu   = {32{sel_SLTU  }} & sltu_r;
+  assign g_xor    = {32{sel_XOR   }} & xor_r;
+  assign g_srl    = {32{sel_SRL   }} & srl_r;
+  assign g_sra    = {32{sel_SRA   }} & sra_r;
+  assign g_or     = {32{sel_OR    }} & or_r;
+  assign g_and    = {32{sel_AND   }} & and_r;
+  assign g_jlink  = {32{sel_JLINK }} & jlink_r;
+  assign g_lui    = {32{sel_LUI   }} & lui_r;
+
+  assign g_mul    = {32{sel_MUL   }} & mul_uu[31:0];
+  assign g_mulh   = {32{sel_MULH  }} & mul_ss[63:32];
+  assign g_mulhsu = {32{sel_MULHSU}} & mul_su[63:32];
+  assign g_mulhu  = {32{sel_MULHU }} & mul_uu[63:32];
+
+  assign alu_out = g_add | g_sub | g_sll | g_slt | g_sltu | g_xor |
+                   g_srl | g_sra | g_or  | g_and | g_jlink | g_lui |
+                   g_mul | g_mulh | g_mulhsu | g_mulhu;
 
 endmodule

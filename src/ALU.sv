@@ -47,7 +47,7 @@ module ALU(
   assign jlink_r = alu_in1 + 32'd4;
   assign lui_r   = alu_in2;
 
-  logic signed [63:0] a_s, b_s, mul_ss, mul_su;
+/*  logic signed [63:0] a_s, b_s, mul_ss, mul_su;
   logic        [63:0] a_u, b_u, mul_uu;
   assign a_s = $signed({{32{alu_in1[31]}}, alu_in1});
   assign b_s = $signed({{32{alu_in2[31]}}, alu_in2});
@@ -57,6 +57,26 @@ module ALU(
   assign mul_ss = a_s * b_s;                    // signed * signed
   assign mul_su = a_s * $signed(b_u);           // signed * unsigned
   assign mul_uu = a_u * b_u;                    // unsigned * unsigned
+*/
+  logic        do_mul;
+  logic [31:0] opA_mul, opB_mul, mul_lo, mulhu_hi, mulhsu_hi, mulh_hi;
+  logic [63:0] U;                 // unsigned 32x32 -> 64 product
+  logic        a_neg, b_neg;
+  assign do_mul = sel_MUL | sel_MULH | sel_MULHSU | sel_MULHU;
+
+  assign opA_mul = do_mul ? alu_in1 : 32'd0;
+  assign opB_mul = do_mul ? alu_in2 : 32'd0;
+  assign a_neg = alu_in1[31];
+  assign b_neg = alu_in2[31];
+
+  assign U     = opA_mul * opB_mul;
+  assign mul_lo    = U[31:0];
+  assign mulhu_hi  = U[63:32];
+  assign mulhsu_hi = U[63:32] - (a_neg ? alu_in2 : 32'd0);
+  assign mulh_hi   = U[63:32]
+                   - (a_neg ? alu_in2 : 32'd0)
+                   - (b_neg ? alu_in1 : 32'd0);
+
 
   logic eq, slt_b, ult_b;
   assign eq    = (alu_in1 == alu_in2);
@@ -87,11 +107,16 @@ module ALU(
   assign g_and    = {32{sel_AND   }} & and_r;
   assign g_jlink  = {32{sel_JLINK }} & jlink_r;
   assign g_lui    = {32{sel_LUI   }} & lui_r;
-
+/*
   assign g_mul    = {32{sel_MUL   }} & mul_uu[31:0];
   assign g_mulh   = {32{sel_MULH  }} & mul_ss[63:32];
   assign g_mulhsu = {32{sel_MULHSU}} & mul_su[63:32];
   assign g_mulhu  = {32{sel_MULHU }} & mul_uu[63:32];
+*/
+  assign g_mul    = {32{sel_MUL   }} & mul_lo;
+  assign g_mulhu  = {32{sel_MULHU }} & mulhu_hi;
+  assign g_mulhsu = {32{sel_MULHSU}} & mulhsu_hi;
+  assign g_mulh   = {32{sel_MULH  }} & mulh_hi;
 
   assign alu_out = g_add | g_sub | g_sll | g_slt | g_sltu | g_xor |
                    g_srl | g_sra | g_or  | g_and | g_jlink | g_lui |

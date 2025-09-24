@@ -8,14 +8,15 @@ module mux3to1_aluout(
     output logic [31:0] E_alu_out
 );
 
-always_comb
-begin
-    if(E_alu_ctrl == 5'd22 || E_alu_ctrl == 5'd23)
-        E_alu_out = E_alu_f;
-    else if (E_op == 7'b1110011)
-        E_alu_out = E_csr;
-    else
-        E_alu_out = E_alu;
-end
+    logic sel_alu_f, sel_csr, sel_alu;
+
+    assign sel_alu_f = (E_alu_ctrl == 5'd22 || E_alu_ctrl == 5'd23);
+    assign sel_csr  = ((sel_alu_f!=1) && E_op == 7'b1110011);
+    assign sel_alu  = ~(sel_alu_f | sel_csr); 
+
+
+    always_comb begin
+        E_alu_out = ({32{sel_alu_f}} & E_alu_f) | ({32{sel_csr}} & E_csr) | ({32{sel_alu}} & E_alu);
+    end
 
 endmodule

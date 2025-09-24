@@ -10,7 +10,7 @@ Report : power
         -analysis_effort low
 Design : top
 Version: P-2019.03-SP1-1
-Date   : Thu Sep 18 11:28:45 2025
+Date   : Wed Sep 24 16:18:16 2025
 ****************************************
 
 
@@ -63,25 +63,26 @@ mux2to1_1              ZeroWireload      N16ADFP_StdCellss0p72vm40c
 mux2to1_2              ZeroWireload      N16ADFP_StdCellss0p72vm40c
 mux2to1_3              ZeroWireload      N16ADFP_StdCellss0p72vm40c
 Exe_stage_DW01_add_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
-JB_unit_DW01_add_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
 CSR_reg_DW01_inc_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
 CSR_reg_DW01_inc_1     ZeroWireload      N16ADFP_StdCellss0p72vm40c
 CSR_reg_DW01_inc_2     ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_sub_0       ZeroWireload      N16ADFP_StdCellss0p72vm40c
 ALU_F_DW01_inc_0       ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_add_0         ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_sub_0         ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_add_1         ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_cmp6_0        ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW_cmp_0           ZeroWireload      N16ADFP_StdCellss0p72vm40c
 PC_adder_DW01_add_0    ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_sub_J3_0    ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_sub_J4_0    ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW_cmp_J5_0      ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW_mult_uns_J9_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW_mult_uns_J10_0  ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW_mult_uns_J11_0  ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_inc_J17_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_add_2       ZeroWireload      N16ADFP_StdCellss0p72vm40c
+JB_unit_DW01_add_1     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_cmp6_1        ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW_cmp_J26_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_sub_J32_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_add_J31_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_add_J30_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_sub_J76_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW_mult_uns_J74_0  ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_sub_J79_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_inc_J80_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_sub_J81_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_add_J82_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_sub_5       ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_sub_3         ZeroWireload      N16ADFP_StdCellss0p72vm40c
 
 
 Global Operating Voltage = 0.72 
@@ -93,24 +94,24 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =   6.6763 mW   (98%)
-  Net Switching Power  = 147.2359 uW    (2%)
+  Cell Internal Power  =  11.5593 mW   (98%)
+  Net Switching Power  = 244.1409 uW    (2%)
                          ---------
-Total Dynamic Power    =   6.8236 mW  (100%)
+Total Dynamic Power    =  11.8034 mW  (100%)
 
-Cell Leakage Power     =   6.8640 uW
+Cell Leakage Power     =   6.7814 uW
 
 
                  Internal         Switching           Leakage            Total
 Power Group      Power            Power               Power              Power   (   %    )  Attrs
 --------------------------------------------------------------------------------------------------
 io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
-memory             2.9942        6.1715e-04          772.3020            2.9956  (  43.86%)
+memory             5.2023        1.2517e-03          772.3020            5.2043  (  44.07%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register           3.6085        9.3358e-03        1.9249e+03            3.6197  (  52.99%)
+register           6.2375        1.4149e-02        1.8097e+03            6.2534  (  52.95%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational  7.3677e-02            0.1373        4.1668e+03            0.2151  (   3.15%)
+combinational      0.1195            0.2287        4.1994e+03            0.3525  (   2.98%)
 --------------------------------------------------------------------------------------------------
-Total              6.6764 mW         0.1472 mW     6.8640e+03 nW         6.8305 mW
+Total             11.5593 mW         0.2441 mW     6.7814e+03 nW        11.8102 mW
 1

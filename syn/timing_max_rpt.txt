@@ -10,7 +10,7 @@ Report : timing
         -sort_by group
 Design : top
 Version: P-2019.03-SP1-1
-Date   : Wed Sep 24 16:18:11 2025
+Date   : Wed Sep 24 17:30:56 2025
 ****************************************
 
  # A fanout number of 1000 was used for high fanout net computations.
@@ -19,7 +19,8 @@ Operating Conditions: ss0p72vm40c   Library: N16ADFP_StdCellss0p72vm40c
 Wire Load Model Mode: segmented
 
   Startpoint: DM1/i_SRAM (rising edge-triggered flip-flop clocked by clk)
-  Endpoint: IM1/i_SRAM (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: cpu/em_reg/M_alu_out_reg_22_
+            (rising edge-triggered flip-flop clocked by clk)
   Path Group: clk
   Path Type: max
 
@@ -45,134 +46,166 @@ Wire Load Model Mode: segmented
   LD_filter          ZeroWireload          N16ADFP_StdCellss0p72vm40c
   WB_stage           ZeroWireload          N16ADFP_StdCellss0p72vm40c
   mux2to1_0          ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  mux3to1_3          ZeroWireload          N16ADFP_StdCellss0p72vm40c
   mux3to1_0          ZeroWireload          N16ADFP_StdCellss0p72vm40c
   mux3to1_1          ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  mux3to1_2          ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  mux2to1_2          ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  mux2to1_4          ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  JB_unit_DW01_add_1 ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  JB_unit            ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  mux2to1_PC         ZeroWireload          N16ADFP_StdCellss0p72vm40c
-  Shifter            ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  ALU_F              ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  ALU_F_DW01_sub_J81_0
+                     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  ALU_F_DW01_add_J80_0
+                     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  ALU_F_DW01_sub_J82_0
+                     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  ALU_F_DW01_inc_J79_0
+                     ZeroWireload          N16ADFP_StdCellss0p72vm40c
+  mux3to1_aluout     ZeroWireload          N16ADFP_StdCellss0p72vm40c
 
   Point                                                   Incr       Path
   --------------------------------------------------------------------------
   clock clk (rise edge)                                 0.0000     0.0000
   clock network delay (ideal)                           0.2000     0.2000
   DM1/i_SRAM/CLK (TS1N16ADFPCLLLVTA512X45M4SWSHOD)      0.0000 #   0.2000 r
-  DM1/i_SRAM/Q[0] (TS1N16ADFPCLLLVTA512X45M4SWSHOD)     0.4649     0.6649 r
-  DM1/DO[0] (SRAM_wrapper_0)                            0.0000     0.6649 r
-  cpu/dm_data_out[0] (CPU)                              0.0000     0.6649 r
-  cpu/u_wb_stage/LD_data[0] (WB_stage)                  0.0000     0.6649 r
-  cpu/u_wb_stage/ld_filter/LD_data[0] (LD_filter)       0.0000     0.6649 r
-  cpu/u_wb_stage/ld_filter/U57/Z (CKBD1BWP16P90LVT)     0.0110     0.6759 r
-  cpu/u_wb_stage/ld_filter/wb_data[0] (LD_filter)       0.0000     0.6759 r
-  cpu/u_wb_stage/mux2to1/in1[0] (mux2to1_0)             0.0000     0.6759 r
-  cpu/u_wb_stage/mux2to1/U17/Z (MUX2D4BWP16P90LVT)      0.0163     0.6922 r
-  cpu/u_wb_stage/mux2to1/out[0] (mux2to1_0)             0.0000     0.6922 r
-  cpu/u_wb_stage/W_rd_data[0] (WB_stage)                0.0000     0.6922 r
-  cpu/exe_stage/W_rd_data[0] (Exe_stage)                0.0000     0.6922 r
-  cpu/exe_stage/mux_forward_rs1/W_rd_data[0] (mux3to1_3)
-                                                        0.0000     0.6922 r
-  cpu/exe_stage/mux_forward_rs1/U71/ZN (AOI22D1BWP16P90)
-                                                        0.0103     0.7025 f
-  cpu/exe_stage/mux_forward_rs1/U94/ZN (IOA21D1BWP16P90LVT)
-                                                        0.0135     0.7159 r
-  cpu/exe_stage/mux_forward_rs1/newest_rs_data[0] (mux3to1_3)
-                                                        0.0000     0.7159 r
-  cpu/exe_stage/mux2to1_jbsrc/in0[0] (mux2to1_2)        0.0000     0.7159 r
-  cpu/exe_stage/mux2to1_jbsrc/U21/Z (MUX2D1BWP16P90LVT)
-                                                        0.0165     0.7324 r
-  cpu/exe_stage/mux2to1_jbsrc/out[0] (mux2to1_2)        0.0000     0.7324 r
-  cpu/exe_stage/JB_unit/in_1[0] (JB_unit)               0.0000     0.7324 r
-  cpu/exe_stage/JB_unit/add_13/A[0] (JB_unit_DW01_add_1)
-                                                        0.0000     0.7324 r
-  cpu/exe_stage/JB_unit/add_13/U260/ZN (ND2D1BWP16P90LVT)
-                                                        0.0090     0.7415 f
-  cpu/exe_stage/JB_unit/add_13/U339/ZN (INVD1BWP16P90LVT)
-                                                        0.0070     0.7484 r
-  cpu/exe_stage/JB_unit/add_13/U269/ZN (AOI21D1BWP16P90LVT)
-                                                        0.0094     0.7579 f
-  cpu/exe_stage/JB_unit/add_13/U229/ZN (OAI21D1BWP16P90LVT)
-                                                        0.0137     0.7716 r
-  cpu/exe_stage/JB_unit/add_13/U302/ZN (AOI21D2BWP16P90LVT)
-                                                        0.0123     0.7839 f
-  cpu/exe_stage/JB_unit/add_13/U289/ZN (OAI21D2BWP16P90LVT)
-                                                        0.0124     0.7963 r
-  cpu/exe_stage/JB_unit/add_13/U290/ZN (AOI21D2BWP16P90LVT)
-                                                        0.0142     0.8105 f
-  cpu/exe_stage/JB_unit/add_13/U286/ZN (OAI21D4BWP16P90LVT)
-                                                        0.0113     0.8218 r
-  cpu/exe_stage/JB_unit/add_13/U285/ZN (AOI21D4BWP16P90LVT)
-                                                        0.0095     0.8312 f
-  cpu/exe_stage/JB_unit/add_13/U288/ZN (OAI21D4BWP16P90LVT)
-                                                        0.0098     0.8410 r
-  cpu/exe_stage/JB_unit/add_13/U287/ZN (AOI21D4BWP16P90LVT)
-                                                        0.0085     0.8496 f
-  cpu/exe_stage/JB_unit/add_13/U325/ZN (OAI21D1BWP16P90LVT)
-                                                        0.0101     0.8597 r
-  cpu/exe_stage/JB_unit/add_13/U300/ZN (AOI21D2BWP16P90LVT)
-                                                        0.0138     0.8735 f
-  cpu/exe_stage/JB_unit/add_13/U299/ZN (OAI21D4BWP16P90LVT)
-                                                        0.0112     0.8846 r
-  cpu/exe_stage/JB_unit/add_13/U298/ZN (AOI21D4BWP16P90LVT)
-                                                        0.0096     0.8942 f
-  cpu/exe_stage/JB_unit/add_13/U301/ZN (OAI21D4BWP16P90LVT)
-                                                        0.0084     0.9026 r
-  cpu/exe_stage/JB_unit/add_13/U291/ZN (AOI21D1BWP16P90LVT)
-                                                        0.0123     0.9149 f
-  cpu/exe_stage/JB_unit/add_13/U292/ZN (OAI21D2BWP16P90LVT)
-                                                        0.0124     0.9273 r
-  cpu/exe_stage/JB_unit/add_13/U282/ZN (AOI21D1BWP16P90LVT)
-                                                        0.0124     0.9397 f
-  cpu/exe_stage/JB_unit/add_13/U379/ZN (OAI21D1BWP16P90LVT)
-                                                        0.0153     0.9550 r
-  cpu/exe_stage/JB_unit/add_13/U378/CO (FA1D1BWP16P90LVT)
-                                                        0.0218     0.9768 r
-  cpu/exe_stage/JB_unit/add_13/U293/Z (XOR2D1BWP16P90LVT)
-                                                        0.0174     0.9942 f
-  cpu/exe_stage/JB_unit/add_13/SUM[31] (JB_unit_DW01_add_1)
-                                                        0.0000     0.9942 f
-  cpu/exe_stage/JB_unit/jb_pc[31] (JB_unit)             0.0000     0.9942 f
-  cpu/exe_stage/U27/Z (XOR2D1BWP16P90LVT)               0.0200     1.0142 f
-  cpu/exe_stage/U177/ZN (NR4D1BWP16P90LVT)              0.0144     1.0286 r
-  cpu/exe_stage/U183/Z (AN4D1BWP16P90LVT)               0.0198     1.0484 r
-  cpu/exe_stage/U184/ZN (IND4D1BWP16P90LVT)             0.0102     1.0586 f
-  cpu/exe_stage/U135/Z (CKMUX2D1BWP16P90LVT)            0.0157     1.0743 f
-  cpu/exe_stage/U134/Z (CKMUX2D1BWP16P90LVT)            0.0140     1.0883 f
-  cpu/exe_stage/U28/Z (BUFFD1BWP16P90LVT)               0.0113     1.0997 f
-  cpu/exe_stage/redirect_valid (Exe_stage)              0.0000     1.0997 f
-  cpu/if_stage/redirect_valid (IF_stage)                0.0000     1.0997 f
-  cpu/if_stage/U12/ZN (CKND2BWP16P90LVT)                0.0076     1.1072 r
-  cpu/if_stage/U9/ZN (IOA21D2BWP16P90LVT)               0.0067     1.1139 f
-  cpu/if_stage/mux2to1_PC/next_pc_sel (mux2to1_PC)      0.0000     1.1139 f
-  cpu/if_stage/mux2to1_PC/U4/ZN (CKND1BWP16P90LVT)      0.0065     1.1204 r
-  cpu/if_stage/mux2to1_PC/U24/Z (AN3D4BWP16P90LVT)      0.0279     1.1483 r
-  cpu/if_stage/mux2to1_PC/U34/ZN (AOI22D1BWP16P90LVT)   0.0126     1.1609 f
-  cpu/if_stage/mux2to1_PC/U35/ZN (IOA21D1BWP16P90LVT)   0.0084     1.1693 r
-  cpu/if_stage/mux2to1_PC/out[6] (mux2to1_PC)           0.0000     1.1693 r
-  cpu/if_stage/next_pc[6] (IF_stage)                    0.0000     1.1693 r
-  cpu/shifter/next_pc[6] (Shifter)                      0.0000     1.1693 r
-  cpu/shifter/U183/ZN (INVD1BWP20P90LVT)                0.0060     1.1753 f
-  cpu/shifter/U184/ZN (INVD1BWP16P90LVT)                0.0066     1.1819 r
-  cpu/shifter/im_addr[4] (Shifter)                      0.0000     1.1819 r
-  cpu/im_addr[4] (CPU)                                  0.0000     1.1819 r
-  IM1/A[4] (SRAM_wrapper_1)                             0.0000     1.1819 r
-  IM1/i_SRAM/A[4] (TS1N16ADFPCLLLVTA512X45M4SWSHOD)     0.0000     1.1819 r
-  data arrival time                                                1.1819
+  DM1/i_SRAM/Q[7] (TS1N16ADFPCLLLVTA512X45M4SWSHOD)     0.4679     0.6679 r
+  DM1/DO[7] (SRAM_wrapper_0)                            0.0000     0.6679 r
+  cpu/dm_data_out[7] (CPU)                              0.0000     0.6679 r
+  cpu/u_wb_stage/LD_data[7] (WB_stage)                  0.0000     0.6679 r
+  cpu/u_wb_stage/ld_filter/LD_data[7] (LD_filter)       0.0000     0.6679 r
+  cpu/u_wb_stage/ld_filter/U17/ZN (CKND2BWP16P90LVT)    0.0063     0.6742 f
+  cpu/u_wb_stage/ld_filter/U15/ZN (ND2D2BWP16P90LVT)    0.0064     0.6806 r
+  cpu/u_wb_stage/ld_filter/U22/ZN (ND3D2BWP16P90LVT)    0.0110     0.6916 f
+  cpu/u_wb_stage/ld_filter/U27/ZN (IOA21D1BWP16P90LVT)
+                                                        0.0080     0.6996 r
+  cpu/u_wb_stage/ld_filter/wb_data[26] (LD_filter)      0.0000     0.6996 r
+  cpu/u_wb_stage/mux2to1/in1[26] (mux2to1_0)            0.0000     0.6996 r
+  cpu/u_wb_stage/mux2to1/U34/ZN (ND2D2BWP16P90LVT)      0.0076     0.7072 f
+  cpu/u_wb_stage/mux2to1/U2/ZN (IND2D4BWP16P90LVT)      0.0067     0.7139 r
+  cpu/u_wb_stage/mux2to1/out[26] (mux2to1_0)            0.0000     0.7139 r
+  cpu/u_wb_stage/W_rd_data[26] (WB_stage)               0.0000     0.7139 r
+  cpu/exe_stage/W_rd_data[26] (Exe_stage)               0.0000     0.7139 r
+  cpu/exe_stage/mux_forward_rs2_f/W_rd_data[26] (mux3to1_0)
+                                                        0.0000     0.7139 r
+  cpu/exe_stage/mux_forward_rs2_f/U51/ZN (CKND2D4BWP16P90LVT)
+                                                        0.0055     0.7194 f
+  cpu/exe_stage/mux_forward_rs2_f/U52/ZN (ND2D4BWP16P90LVT)
+                                                        0.0068     0.7262 r
+  cpu/exe_stage/mux_forward_rs2_f/newest_rs_data[26] (mux3to1_0)
+                                                        0.0000     0.7262 r
+  cpu/exe_stage/alu_f/ALU_in2_f[26] (ALU_F)             0.0000     0.7262 r
+  cpu/exe_stage/alu_f/U110/ZN (CKND2BWP16P90LVT)        0.0045     0.7307 f
+  cpu/exe_stage/alu_f/U750/ZN (AOI22D2BWP16P90LVT)      0.0077     0.7384 r
+  cpu/exe_stage/alu_f/U749/ZN (OAI211D2BWP16P90LVT)     0.0091     0.7475 f
+  cpu/exe_stage/alu_f/U742/ZN (IND2D2BWP16P90LVT)       0.0140     0.7615 f
+  cpu/exe_stage/alu_f/U743/ZN (CKND2BWP16P90LVT)        0.0048     0.7662 r
+  cpu/exe_stage/alu_f/U477/ZN (OAI211D2BWP16P90LVT)     0.0129     0.7791 f
+  cpu/exe_stage/alu_f/U883/ZN (CKND2BWP16P90LVT)        0.0104     0.7895 r
+  cpu/exe_stage/alu_f/U746/ZN (ND2D1BWP16P90LVT)        0.0090     0.7985 f
+  cpu/exe_stage/alu_f/U1059/ZN (ND2D2BWP16P90LVT)       0.0064     0.8049 r
+  cpu/exe_stage/alu_f/U1150/ZN (CKND2BWP16P90LVT)       0.0054     0.8103 f
+  cpu/exe_stage/alu_f/sub_70/A[2] (ALU_F_DW01_sub_J81_0)
+                                                        0.0000     0.8103 f
+  cpu/exe_stage/alu_f/sub_70/U127/ZN (NR2D2BWP16P90LVT)
+                                                        0.0105     0.8209 r
+  cpu/exe_stage/alu_f/sub_70/U119/ZN (INVD4BWP16P90LVT)
+                                                        0.0065     0.8274 f
+  cpu/exe_stage/alu_f/sub_70/U117/ZN (AOI21D2BWP16P90LVT)
+                                                        0.0077     0.8350 r
+  cpu/exe_stage/alu_f/sub_70/U116/ZN (OAI21D2BWP16P90LVT)
+                                                        0.0083     0.8433 f
+  cpu/exe_stage/alu_f/sub_70/U100/ZN (AOI21D4BWP16P90LVT)
+                                                        0.0124     0.8557 r
+  cpu/exe_stage/alu_f/sub_70/U110/ZN (OAI21D4BWP16P90LVT)
+                                                        0.0083     0.8641 f
+  cpu/exe_stage/alu_f/sub_70/U108/ZN (CKND2BWP16P90LVT)
+                                                        0.0058     0.8698 r
+  cpu/exe_stage/alu_f/sub_70/U78/ZN (ND2D4BWP16P90LVT)
+                                                        0.0060     0.8758 f
+  cpu/exe_stage/alu_f/sub_70/U106/ZN (ND2D4BWP16P90LVT)
+                                                        0.0063     0.8822 r
+  cpu/exe_stage/alu_f/sub_70/DIFF[6] (ALU_F_DW01_sub_J81_0)
+                                                        0.0000     0.8822 r
+  cpu/exe_stage/alu_f/U814/ZN (CKND2BWP16P90LVT)        0.0068     0.8890 f
+  cpu/exe_stage/alu_f/U817/ZN (IND4D1BWP16P90LVT)       0.0098     0.8988 r
+  cpu/exe_stage/alu_f/U1106/Z (BUFFD4BWP16P90LVT)       0.0157     0.9145 r
+  cpu/exe_stage/alu_f/U1500/ZN (OAI222D2BWP16P90LVT)    0.0192     0.9337 f
+  cpu/exe_stage/alu_f/sub_73/B[10] (ALU_F_DW01_sub_J82_0)
+                                                        0.0000     0.9337 f
+  cpu/exe_stage/alu_f/sub_73/U592/ZN (IIND4D4BWP16P90LVT)
+                                                        0.0232     0.9569 f
+  cpu/exe_stage/alu_f/sub_73/U634/ZN (IND2D4BWP16P90LVT)
+                                                        0.0163     0.9733 f
+  cpu/exe_stage/alu_f/sub_73/U636/ZN (CKNR2D8BWP16P90LVT)
+                                                        0.0091     0.9823 r
+  cpu/exe_stage/alu_f/sub_73/U621/ZN (AOI21D4BWP16P90LVT)
+                                                        0.0086     0.9909 f
+  cpu/exe_stage/alu_f/sub_73/U203/ZN (OAI21D1BWP16P90LVT)
+                                                        0.0106     1.0015 r
+  cpu/exe_stage/alu_f/sub_73/U498/ZN (XNR2D2BWP16P90LVT)
+                                                        0.0195     1.0210 f
+  cpu/exe_stage/alu_f/sub_73/DIFF[33] (ALU_F_DW01_sub_J82_0)
+                                                        0.0000     1.0210 f
+  cpu/exe_stage/alu_f/U1502/ZN (OAI33D2BWP16P90LVT)     0.0167     1.0377 r
+  cpu/exe_stage/alu_f/U1021/ZN (OAI21D2BWP16P90LVT)     0.0097     1.0475 f
+  cpu/exe_stage/alu_f/U856/ZN (CKND2BWP16P90LVT)        0.0074     1.0548 r
+  cpu/exe_stage/alu_f/U854/ZN (CKND2D4BWP16P90LVT)      0.0061     1.0610 f
+  cpu/exe_stage/alu_f/U855/ZN (CKND2BWP16P90LVT)        0.0037     1.0646 r
+  cpu/exe_stage/alu_f/U799/ZN (ND3D1BWP16P90LVT)        0.0092     1.0738 f
+  cpu/exe_stage/alu_f/U1604/ZN (CKND2BWP16P90LVT)       0.0075     1.0814 r
+  cpu/exe_stage/alu_f/U961/Z (AN2D1BWP16P90LVT)         0.0125     1.0939 r
+  cpu/exe_stage/alu_f/U85/Z (AN2D4BWP16P90LVT)          0.0147     1.1086 r
+  cpu/exe_stage/alu_f/U1357/ZN (IND4D2BWP16P90LVT)      0.0104     1.1190 f
+  cpu/exe_stage/alu_f/U891/ZN (ND2D2BWP16P90LVT)        0.0079     1.1269 r
+  cpu/exe_stage/alu_f/U841/ZN (INVD4BWP16P90LVT)        0.0066     1.1334 f
+  cpu/exe_stage/alu_f/U839/ZN (OAI221D2BWP16P90LVT)     0.0175     1.1510 r
+  cpu/exe_stage/alu_f/U693/ZN (ND2D1BWP16P90LVT)        0.0134     1.1643 f
+  cpu/exe_stage/alu_f/U1645/ZN (ND2D1BWP16P90LVT)       0.0109     1.1753 r
+  cpu/exe_stage/alu_f/U941/Z (OR2D2BWP16P90LVT)         0.0147     1.1900 r
+  cpu/exe_stage/alu_f/U707/ZN (CKND2D4BWP16P90LVT)      0.0064     1.1964 f
+  cpu/exe_stage/alu_f/U1362/ZN (IND2D4BWP16P90LVT)      0.0124     1.2088 f
+  cpu/exe_stage/alu_f/U1236/ZN (ND2D2BWP16P90LVT)       0.0045     1.2134 r
+  cpu/exe_stage/alu_f/U522/Z (AN3D4BWP16P90LVT)         0.0143     1.2276 r
+  cpu/exe_stage/alu_f/U69/ZN (CKND2D2BWP16P90LVT)       0.0045     1.2321 f
+  cpu/exe_stage/alu_f/U311/ZN (AOI22D1BWP16P90LVT)      0.0112     1.2433 r
+  cpu/exe_stage/alu_f/U1193/Z (AN3D4BWP16P90LVT)        0.0169     1.2602 r
+  cpu/exe_stage/alu_f/r415/A[5] (ALU_F_DW01_inc_J79_0)
+                                                        0.0000     1.2602 r
+  cpu/exe_stage/alu_f/r415/U143/ZN (INVD4BWP16P90LVT)   0.0045     1.2647 f
+  cpu/exe_stage/alu_f/r415/U204/ZN (CKNR2D4BWP16P90LVT)
+                                                        0.0054     1.2701 r
+  cpu/exe_stage/alu_f/r415/U203/ZN (CKND2D4BWP16P90LVT)
+                                                        0.0065     1.2765 f
+  cpu/exe_stage/alu_f/r415/U176/ZN (NR2D2BWP16P90LVT)   0.0081     1.2846 r
+  cpu/exe_stage/alu_f/r415/U174/ZN (CKND2D2BWP16P90LVT)
+                                                        0.0062     1.2908 f
+  cpu/exe_stage/alu_f/r415/U179/Z (OR2D1BWP16P90LVT)    0.0135     1.3044 f
+  cpu/exe_stage/alu_f/r415/U180/ZN (XNR2D1BWP16P90LVT)
+                                                        0.0148     1.3191 r
+  cpu/exe_stage/alu_f/r415/SUM[22] (ALU_F_DW01_inc_J79_0)
+                                                        0.0000     1.3191 r
+  cpu/exe_stage/alu_f/U776/ZN (ND2D1BWP16P90LVT)        0.0061     1.3253 f
+  cpu/exe_stage/alu_f/U760/ZN (ND2D1BWP16P90LVT)        0.0052     1.3305 r
+  cpu/exe_stage/alu_f/ALU_out_f[22] (ALU_F)             0.0000     1.3305 r
+  cpu/exe_stage/mux_aluout/E_alu_f[22] (mux3to1_aluout)
+                                                        0.0000     1.3305 r
+  cpu/exe_stage/mux_aluout/U23/ZN (IOA21D1BWP16P90LVT)
+                                                        0.0123     1.3428 r
+  cpu/exe_stage/mux_aluout/E_alu_out[22] (mux3to1_aluout)
+                                                        0.0000     1.3428 r
+  cpu/exe_stage/E_alu_out[22] (Exe_stage)               0.0000     1.3428 r
+  cpu/em_reg/E_alu_out[22] (EM_reg)                     0.0000     1.3428 r
+  cpu/em_reg/M_alu_out_reg_22_/D (DFCNQD2BWP16P90LVT)   0.0000     1.3428 r
+  data arrival time                                                1.3428
 
-  clock clk (rise edge)                                 1.1500     1.1500
-  clock network delay (ideal)                           0.2000     1.3500
-  clock uncertainty                                    -0.0200     1.3300
-  IM1/i_SRAM/CLK (TS1N16ADFPCLLLVTA512X45M4SWSHOD)      0.0000     1.3300 r
-  library setup time                                   -0.1481     1.1819
-  data required time                                               1.1819
+  clock clk (rise edge)                                 1.0500     1.0500
+  clock network delay (ideal)                           0.2000     1.2500
+  clock uncertainty                                    -0.0200     1.2300
+  cpu/em_reg/M_alu_out_reg_22_/CP (DFCNQD2BWP16P90LVT)
+                                                        0.0000     1.2300 r
+  library setup time                                   -0.0044     1.2256
+  data required time                                               1.2256
   --------------------------------------------------------------------------
-  data required time                                               1.1819
-  data arrival time                                               -1.1819
+  data required time                                               1.2256
+  data arrival time                                               -1.3428
   --------------------------------------------------------------------------
-  slack (MET)                                                      0.0000
+  slack (VIOLATED)                                                -0.1171
 
 
 1

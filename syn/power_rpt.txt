@@ -10,7 +10,7 @@ Report : power
         -analysis_effort low
 Design : top
 Version: P-2019.03-SP1-1
-Date   : Wed Sep 24 16:18:16 2025
+Date   : Wed Sep 24 17:31:01 2025
 ****************************************
 
 
@@ -71,18 +71,18 @@ ALU_DW_cmp_0           ZeroWireload      N16ADFP_StdCellss0p72vm40c
 PC_adder_DW01_add_0    ZeroWireload      N16ADFP_StdCellss0p72vm40c
 JB_unit_DW01_add_1     ZeroWireload      N16ADFP_StdCellss0p72vm40c
 ALU_DW01_cmp6_1        ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW_cmp_J26_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
 ALU_DW01_sub_J32_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
 ALU_DW01_add_J31_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_add_J30_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_sub_J76_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW_mult_uns_J74_0  ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_sub_J79_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_inc_J80_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_add_J33_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_sub_J73_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW01_sub_J74_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_DW_mult_uns_J75_0  ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_inc_J79_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_add_J80_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
 ALU_F_DW01_sub_J81_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_add_J82_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_F_DW01_sub_5       ZeroWireload      N16ADFP_StdCellss0p72vm40c
-ALU_DW01_sub_3         ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_sub_J82_0   ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW_cmp_J79_0     ZeroWireload      N16ADFP_StdCellss0p72vm40c
+ALU_F_DW01_sub_8       ZeroWireload      N16ADFP_StdCellss0p72vm40c
 
 
 Global Operating Voltage = 0.72 
@@ -94,24 +94,24 @@ Power-specific unit information :
     Leakage Power Units = 1nW
 
 
-  Cell Internal Power  =  11.5593 mW   (98%)
-  Net Switching Power  = 244.1409 uW    (2%)
+  Cell Internal Power  =  12.6607 mW   (98%)
+  Net Switching Power  = 266.3312 uW    (2%)
                          ---------
-Total Dynamic Power    =  11.8034 mW  (100%)
+Total Dynamic Power    =  12.9270 mW  (100%)
 
-Cell Leakage Power     =   6.7814 uW
+Cell Leakage Power     =   6.7134 uW
 
 
                  Internal         Switching           Leakage            Total
 Power Group      Power            Power               Power              Power   (   %    )  Attrs
 --------------------------------------------------------------------------------------------------
 io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
-memory             5.2023        1.2517e-03          772.3020            5.2043  (  44.07%)
+memory             5.6978        1.3049e-03          772.3020            5.6998  (  44.07%)
 black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
 clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
-register           6.2375        1.4149e-02        1.8097e+03            6.2534  (  52.95%)
+register           6.8351        1.6598e-02        1.8192e+03            6.8535  (  52.99%)
 sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
-combinational      0.1195            0.2287        4.1994e+03            0.3525  (   2.98%)
+combinational      0.1279            0.2484        4.1219e+03            0.3805  (   2.94%)
 --------------------------------------------------------------------------------------------------
-Total             11.5593 mW         0.2441 mW     6.7814e+03 nW        11.8102 mW
+Total             12.6608 mW         0.2663 mW     6.7134e+03 nW        12.9338 mW
 1

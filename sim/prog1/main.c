@@ -1,27 +1,25 @@
-// main.c
-// Sort Algorithm: insertion sort (ascending)
-
 int main(void) {
-    extern int _test_start;   
-    extern int array_size;    
-    extern int array_addr[];  
+    extern int testStart;
+    extern int arrAddr;
+    extern int arrSize;
 
-    int n = array_size;
-    int *dst = &_test_start;   
-    int *src = array_addr;    
+    int idxI, idxJ, idxK;
+    int swapTmp;
 
-    for (int i = 0; i < n; ++i) {
-        dst[i] = src[i];
+    // copy 32 elements from arrAddr to testStart
+    for (idxK = 0; idxK < 32; idxK++) {
+        *(&testStart + idxK) = *(&arrAddr + idxK);
     }
 
-    for (int i = 1; i < n; ++i) {
-        int key = dst[i];
-        int j = i - 1;
-        while (j >= 0 && dst[j] > key) {
-            dst[j + 1] = dst[j];
-            --j;
+    // bubble sort on testStart
+    for (idxI = 0; idxI < *(&arrSize) - 1; idxI++) {
+        for (idxJ = 0; idxJ < *(&arrSize) - 1 - idxI; idxJ++) {
+            if (*(&testStart + idxJ) > *(&testStart + idxJ + 1)) {
+                swapTmp = *(&testStart + idxJ);
+                *(&testStart + idxJ) = *(&testStart + idxJ + 1);
+                *(&testStart + idxJ + 1) = swapTmp;
+            }
         }
-        dst[j + 1] = key;
     }
 
     return 0;
